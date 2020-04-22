@@ -13,12 +13,12 @@
 -   [Terms of use](#terms-of-use)
 
 ## Introduction
-This repository has Coronavirus (Covid-19) data and code related to CGHR's COVID-19 initiative.  All data and code posted here is free for the public to use.
+This repository has Coronavirus (Covid-19) data and code related to CGHR's COVID-19 initiative.  All data and code posted here are free for the public to use.
 
-There several sources of COVID-19 data on the web. Here we list some that we have identified so far.
+There several sources of COVID-19 data on the web. Here we list some sources that we have identified so far.
 <br>
 
-<b>Data sources:</b><br>
+<b>Data sources on the web:</b><br>
 * [John Hopinks CSSE](https://github.com/CSSEGISandData/COVID-19)
 * [Coronavirus App](https://coronavirus.app/map)
 * [INED](https://dc-covid.site.ined.fr/en/data/)
@@ -29,16 +29,14 @@ There several sources of COVID-19 data on the web. Here we list some that we hav
 * [Our World in Data]()
 * [Worldometers](https://www.worldometers.info/coronavirus/)
 
-In our [COVID-19 forecasting paper]() we mostly used data from Coronavirus App and a few other sources. The R script shared in this public repository (R folder above) uses the publicly available John Hopinks CSSE data.
-
-<br>
+In our [COVID-19 forecasting paper](https://medrxiv.org/cgi/content/short/2020.04.17.20069161v1) we mostly used data from Coronavirus App. The forecasting R script shared in this repository (R folder above) uses the publicly available John Hopinks CSSE data so that anyone can run our models.
 
 
 ## How to use this repository?
 
-The data shown here can be accessed in two ways. You can download the CSV files found in the folder data (see above) or you can access our COVID-19 relational.  This db was created using ([PostgreSQL](https://www.postgresql.org/)) and you can connect to it using most stats programs (R, Stata, Excel, etc.)
+The data shown here can be accessed in two ways. First, you can download the CSV files found in the data folder (see above). Alternatively, you can access our COVID-19 relational database (db).  This db was created using [PostgreSQL](https://www.postgresql.org/) and you can connect to it using most stats programs (R, Stata, Excel, etc.)
   
-The following data sets are shared in this repository,
+Currently, the following data sets are shared in this repository,
 
 |Data|Description|Source|
 |--------|-----------|-----------|
@@ -46,18 +44,17 @@ The following data sets are shared in this repository,
 |jh_ts_covid19_deaths_global|COVID-19 global deaths by day (long format)|John Hopkins CSSE|
 |jh_ts_covid19_confirmed_global|COVID-19 global confirmed cases by day (restructured to long format)|John Hopkins CSSE|
 |jh_ts_covid19_recovered_global|COVID-19 global recovered cases by day (restructured to long format)|John Hopkins CSSE|
-|ined|COVID-19 deaths by age group and gender for selected European countries (restructured to long format) |INED|
+|ined_age_sex_covid19_deaths|COVID-19 deaths by age group and gender for selected European countries (restructured to long format) |INED|
 
 
-Note: The data above will be updated every 48 hours during the duration of the global pandemic.
+**Note**: The data above will be updated every 48 hours during the duration of the global pandemic.
 
 ### COVID-19 database
-In the folder data (see above) you'll find CSV versions of the above data sets.  You'll also find these data in our COVID-19 relational db.  CGHR has compiled data from different open-data sources and consolidated these into a single database.
 
+CGHR has compiled the open data listed in the table above and consolidated these into a single database.
+You'll can access our COVID-19 db by using the following connection parameters:
 
-The parameters to connect to CGHR's COVID-19 db are as follows:
-
-  - IP: 
+  - Host: IP
   - Port: 5432
   - Database: covid_19
   - User name: covid_ruser
@@ -65,7 +62,7 @@ The parameters to connect to CGHR's COVID-19 db are as follows:
 
 
 ### How to use the data with R
-R is an open-source statistical and computational program. You can download it here ([R-project](https://www.r-project.org/))
+R is an open-source statistical and computational program. You can download it here [R-project](https://www.r-project.org/).
 
 * Sample code to grab data from CGHR's public COVID-19 db
 
@@ -73,11 +70,11 @@ R is an open-source statistical and computational program. You can download it h
 		#Install libraries
 		install.packages("DBI")
 				
-		# Load librery
+		# Load library
 		library(DBI)
 	    
 		# create connection to db
-        con <- DBI::dbConnect(drv = RPostgres::Postgres(),user='covid_ruser',password='?,host=IP,port=5432,dbname='covid_19')
+        con <- DBI::dbConnect(drv = RPostgres::Postgres(),user='covid_ruser',password='?',host=IP,port=5432,dbname='covid_19')
 
 		# get table from db
 		res <- dbSendQuery(con, "SELECT * FROM jh_ts_covid19_deaths_global")
@@ -88,7 +85,7 @@ R is an open-source statistical and computational program. You can download it h
 
 		# See first and last 6 rows
 		head(cv19)
-		head(cv19)
+		tail(cv19)
 		
 		# write table as CSV file
 		write.table(cv19, "/path/cv19.txt", sep=",", row.names=FALSE)
@@ -160,6 +157,6 @@ Here we provide a data dictionary for all data shared in this repository.
 
 The content presented here is free for the public to use. 
 <br>
-<b>Contact: </b><br>
+<b>Contact us: </b>
 * Patrick Brown: brownpa@smh.ca
 * CGHR: cghr@smh.ca
