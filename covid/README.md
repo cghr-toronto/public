@@ -1,4 +1,4 @@
-# CGHR's COVID-19 data
+# CGHR's COVID-19 data & code
 
 -   [Introduction](#introduction)
 -	[How to use this repository](#how-to-use-this-repository)
