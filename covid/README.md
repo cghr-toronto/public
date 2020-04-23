@@ -1,15 +1,17 @@
-# CGHR - COVID-19 data and code
+# CGHR's COVID-19 data
 
 -   [Introduction](#introduction)
-	-	[How to use this repository](#how-to-use-this-repository)
--   [COVID-19 data ](#covid-19-data)
-	-   [Data sources](#data-sources)
-	-   [Data available in CGHR's repository](#data-available-in-cghrs-repository)
+-	[How to use this repository](#how-to-use-this-repository)
+-   [COVID-19 data in this repository](#covid-19-data-in-this-repository)
+	-	[COVID-19 database](#covid-19-database)
+	-	[How to use the data with R](#how-to-use-the-data-with-r)
 	-   [Data dictionary](#data-dictionary)
--	[COVID-19 forecasting models](#covid-19-data)
-	-	[Forecasting R script](#forecasting-r-script)
+-   [COVID-19 R code in this repository](#covid-19-r-code-in-this-repository)
+	-	[COVID-19 Forecasting R code](#covid-19-forecasting-r-code)
+-	[COVID-19 data visualizations](#covid-19-data-visualizations)
 	-	[Forescasting data visualizations](#forescasting-data-visualizations)
--	[Other COVID-19 data visualizations](#other-covid-19-data-visualizations)
+	-	[Interactive map](#interactive-map)
+	-	[Other data visualizations](#other-data-visualizations)
 -   [Terms of use](#terms-of-use)
 
 ## Introduction
@@ -32,10 +34,13 @@ There several sources of COVID-19 data on the web. Here we list some sources tha
 In our [COVID-19 forecasting paper](https://medrxiv.org/cgi/content/short/2020.04.17.20069161v1) we mostly used data from Coronavirus App. The forecasting R script shared in this repository (R folder above) uses the publicly available John Hopinks CSSE data so that anyone can run our models.
 
 
-## How to use this repository?
+## How to use this repository
 
 The data shown here can be accessed in two ways. First, you can download the CSV files found in the data folder (see above). Alternatively, you can access our COVID-19 relational database (db).  This db was created using [PostgreSQL](https://www.postgresql.org/) and you can connect to it using most stats programs (R, Stata, Excel, etc.)
   
+
+## COVID-19 data in this repository
+
 Currently, the following data sets are shared in this repository,
 
 |Data|Description|Source|
@@ -74,7 +79,7 @@ R is an open-source statistical and computational program. You can download it h
 		library(DBI)
 	    
 		# create connection to db
-        con <- DBI::dbConnect(drv = RPostgres::Postgres(),user='covid_ruser',password='?',host=IP,port=5432,dbname='covid_19')
+        con <- DBI::dbConnect(drv = RPostgres::Postgres(), user='covid_ruser', password='?', host='IP', port=5432, dbname='covid_19')
 
 		# get table from db
 		res <- dbSendQuery(con, "SELECT * FROM jh_ts_covid19_deaths_global")
@@ -105,8 +110,6 @@ Here we provide a data dictionary for all data shared in this repository.
 
 |Variable|Description|
 |--------|-----------|
-
-
 
 
 * File/Table: jh_ts_covid19_confirmed_global, jh_ts_covid19_deaths_global, jh_ts_covid19_recovered_global 
@@ -146,10 +149,19 @@ Here we provide a data dictionary for all data shared in this repository.
 |sheet1|Excel sheet name|
 |serial_id|Serial number, primary key|
 
+## COVID-19 R code in this repository
 
-## Visualizations
+### COVID-19 Forecasting R code
+
+## COVID-19 Visualizations
+
+### Forescasting data visualizations
+* []()
 
 ### Interactive map
+* []()
+
+### Other visualizations
 * []()
 
 
@@ -157,6 +169,6 @@ Here we provide a data dictionary for all data shared in this repository.
 
 The content presented here is free for the public to use. 
 <br>
-<b>Contact us: </b>
+<b>Contact us:
 * Patrick Brown: brownpa@smh.ca
 * CGHR: cghr@smh.ca
