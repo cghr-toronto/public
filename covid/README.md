@@ -21,18 +21,19 @@ There several sources of COVID-19 data on the web. Here we list some sources tha
 <br>
 
 <b>Data sources on the web:</b><br>
-* [John Hopinks CSSE](https://github.com/CSSEGISandData/COVID-19)
-* [Coronavirus App](https://coronavirus.app/map)
-* [INED](https://dc-covid.site.ined.fr/en/data/)
+* [John Hopinks CSSE](https://github.com/CSSEGISandData/COVID-19 )
+* [Coronavirus App](https://coronavirus.app/map )
+* [INED](https://dc-covid.site.ined.fr/en/data/ )
 * [European Centre for Disease Prevention and Control](https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide)
-* [French data]()
-* [Italian data]()
-* [US county data]()
-* [Our World in Data]()
+* [Italian data](https://github.com/pcm-dpc/COVID-19)
+* [French data](https://github.com/opencovid19-fr)
+* [Canadian data](https://github.com/ishaberry/Covid19Canada)
+* [USA](https://github.com/nytimes/covid-19-data)
+* [Belgium](https://epistat.wiv-isp.be/home/)
+* [Our World in Data](https://github.com/owid/covid-19-data/tree/master/public/data)
 * [Worldometers](https://www.worldometers.info/coronavirus/)
 
 In our [COVID-19 forecasting paper](https://medrxiv.org/cgi/content/short/2020.04.17.20069161v1) we mostly used data from Coronavirus App. The forecasting R script shared in this repository (R folder above) uses the publicly available John Hopinks CSSE data so that anyone can run our models.
-
 
 ## How to use this repository
 
@@ -169,6 +170,4 @@ Here we provide a data dictionary for all data shared in this repository.
 
 The content presented here is free for the public to use. 
 <br>
-<b>Contact us:
-* Patrick Brown: brownpa@smh.ca
-* CGHR: cghr@smh.ca
+<b>Contact us: cghr@smh.ca, [CGHR.org](http://www.cghr.org/)
