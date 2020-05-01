@@ -19,7 +19,7 @@ This repository has Coronavirus (Covid-19) related programming code from [CGHR's
 
 ## COVID-19 data in this repository
 
-Currently, the COVID-19 related data can be found in our [data repository](https://github.com/cghr-toronto/covid-data).
+Currently, COVID-19 related data can be found in our [data repository](https://github.com/cghr-toronto/covid-data).
 
 **Note**: The data in our repository will be updated twice a weeek for the duration of the global pandemic.
 
