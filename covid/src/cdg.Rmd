@@ -1,0 +1,43 @@
+
+```{r header, echo=FALSE}
+Pmisc::markdownHeader(title= "CFR for _Charles De Gaulle_",
+	geometry= "margin=1.25in",
+  date="",
+	fontsize=12,
+	author = "")
+```
+
+
+```{r theCFR}
+
+Sdead = 0:3
+
+Scfr = seq(0, 0.03, len=2001)
+
+theLik = mapply(
+  dbinom,
+  x = Sdead,
+  MoreArgs = list(prob = Scfr,   size = 668),
+  log=TRUE)
+theMaxL = apply(theLik, 2, max)
+theLikC = theLik - matrix(theMaxL, nrow=nrow(theLik), ncol=length(theMaxL),
+  byrow=TRUE)
+
+matplot(Scfr, theLikC, type='l', lty=1, col=1:length(Sdead),
+  xlab='CFR', ylab='log L', ylim = c(-5,0), xlim = c(0, 0.012))
+legend('bottom', lty=1, col=1:length(Sdead), 
+  legend=Sdead, title='deaths', bty='n')
+
+Sprob = c(0.95, 0.99)
+Schisq = qchisq(Sprob, 1)/2
+
+abline(h=-Schisq, lty=3)
+axis(4, -Schisq, Sprob, las=2, line=-1)
+
+ci = apply(theLikC, 2, function(xx, threshold) c(Scfr[which.max(xx)], range(Scfr[xx > threshold])),
+  threshold = -Schisq[2])
+dimnames(ci) = list(level = c('est','lower','upper'), deaths = as.character(Sdead)) 
+signif(ci*1000,2)
+
+
+```

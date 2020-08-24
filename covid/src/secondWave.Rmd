@@ -1,0 +1,868 @@
+```{r headerAppendix, echo=FALSE}
+if (any(commandArgs() == "mdToTex")) {
+  # if you'll be converting md to tex, can use the following
+  knitr::knit_hooks$set(plot = knitr::hook_plot_tex)
+  knitr::opts_chunk$set(dev = "png", fig.align = "center")
+  mdToTex <- TRUE
+} else {
+  mdToTex <- FALSE
+  knitr::knit_hooks$set(
+    plot = Pmisc::hook_plot_mdsubfig
+  )
+}
+
+knitr::knit_hooks$set(
+  marginsp = function(before, options, envir) {
+    if (!before) {
+      return()
+    }
+    # use small margins
+    par(
+      mar = c(
+        1.5,
+        2.5, 0, 0
+      ),
+      mgp = c(1.45, 0.45, 0), cex = 1.25,
+      bty = "l"
+    )
+  }
+)
+knitr::opts_chunk$set(
+  fig.height = 4, fig.width = 4, echo = FALSE,
+  marginsp = TRUE, fig.ncol = 2, fig.pos = "p",
+  out.extra = " ",
+  out.width = Pmisc::out.width(0.45)
+)
+
+
+Pmisc::markdownHeader(
+  title = "Model for rebound peak",
+  geometry = "margin=0.7in",
+  date = "",
+  fontsize = 12,
+  author = "",
+  numbersections = FALSE,
+  #  bibliostyle= 'authoryear,backend=biber',
+  # 	bibliography='paper.bib',
+  css = system.file("src/webpage.css", package = "Pmisc"),
+  headerincludes = c(
+    "\\usepackage{xcolor,pdflscape}",
+    "\\captionsetup[figure]{position=top}",
+    "\\usepackage{floatrow}",
+    "\\floatsetup[figure]{capposition=top}",
+    "\\floatsetup[table]{capposition=top}"
+  )
+)
+```
+
+```{r load libraries, include=FALSE}
+### Load libraries
+# library('nCov2019')
+library("knitr")
+# library('rstan')
+# library("MASS")
+
+
+source("covid_expected_counts.R")
+source("covid_data.R")
+source("forecast.R")
+```
+
+
+```{r ImportData, include=FALSE}
+# Import data produced by Coronavirus_Data.Rmd
+storeDir <- file.path("/store", "patrick", "covid")
+if (!dir.exists(storeDir)) storeDir <- "."
+
+today <- format(Sys.time(), format = "%Y_%m_%d")
+
+dataFile <- file.path(
+  storeDir,
+  paste0("covidData", today, ".rds")
+)
+
+nCov_Merged <- readRDS(dataFile)
+```
+
+
+```{r showData2, echo=FALSE, include=FALSE}
+## Some of past week's data for France, NY, USA
+nCov_Merged[
+  nCov_Merged$time >= (max(nCov_Merged$time) - 10) &
+    nCov_Merged$reporting_unit %in% c("New York", "Spain"),
+  c("reporting_unit", "time", "Expected", "dead")
+]
+```
+
+```{r data}
+Scountry <- c(
+  "Iran",
+  "Florida", "California", "Texas", "Arizona", "Louisiana",
+  "Georgia", "Australia", "Peru", "Colombia", "Italy", "Spain",
+  "New York", 'Canada', 'New Jersey'
+)
+nCov_Merged <- nCov_Merged[
+  nCov_Merged$reporting_unit %in% Scountry & !is.na(nCov_Merged$dead),
+  c("reporting_unit", "time", "dead", "Expected")
+]
+```
+
+```{r starting}
+startOfEpidemic1 <- c(
+  Arizona = "03/21",
+  Texas = "03/17",
+  Georgia = "03/13",
+  Florida = "03/07",
+  California = "03/01",
+  "New York" = "03/15",
+  "Canada" = "03/17",
+  Iran = "02/14",  Spain = '03/04'
+)
+startOfEpidemic <- as.Date(paste0(
+  "2020/", startOfEpidemic1
+))
+names(startOfEpidemic) <- names(startOfEpidemic1)
+
+# Remove rows before start of epidemic for location, via index
+getRid <- c()
+for (D in names(startOfEpidemic)) {
+  getRid <- c(getRid, which(nCov_Merged$reporting_unit == D &
+    nCov_Merged$time < startOfEpidemic[D]))
+}
+if (length(getRid)) nCov_Merged <- nCov_Merged[-getRid, ]
+```
+
+```{r startingVaues}
+# Dates of first and second peaks
+firstPeak1 <- c(
+  Australia = "05/10",
+  Arizona = "05/01",
+  Texas = "05/01",
+  Georgia = "04/20",
+  Florida = "04/15",
+  Iran = "03/20",
+  California = "05/01",
+  Louisiana = "04/20",
+  Colombia = "05/01",
+  Peru = "05/01",
+  Spain = "04/01",
+  Italy = "03/20",
+  "New York" = "04/10",
+  "New Jersey" = "04/10",
+  Canada = '05/01'
+)
+secondPeak1 <- c(
+  Australia = "08/10",
+  Arizona = "08/01",
+  Texas = "08/01",
+  Georgia = "08/01",
+  Florida = "08/01",
+  Iran = "07/10",
+  California = "08/01",
+  Louisiana = "08/01",
+  Colombia = "08/15",
+  Peru = "09/15",
+  Spain = "08/25",
+  Italy = "08/25"
+)
+
+startC <- c(
+  Peru = 11, Colombia = 1,
+  Arizona = 1, California = 2, Florida = 1, Georgia = 4, Iran = 2,
+  Louisiana = 7, Texas = 1, Australia = 1, Spain = 5, Italy = 5,
+  "New York" = 10, 'New Jersey' = 10, Canada = 1
+)
+startC2 <- c(
+  Peru = 7, Colombia = 2,
+  Arizona = 5, California = 3, Florida = 5, Georgia = 5, Iran = 5,
+  Louisiana = 6, Texas = 6, Australia = 2, Spain = 1, Italy = 0.1)
+
+firstPeak <- as.Date(paste0("2020/", firstPeak1))
+names(firstPeak) <- names(firstPeak1)
+secondPeak <- as.Date(paste0("2020/", secondPeak1))
+names(secondPeak) <- names(secondPeak1)
+timeToSecond <- as.numeric(difftime(secondPeak, firstPeak[names(secondPeak)], units = "days"))
+names(timeToSecond) <- names(secondPeak)
+```
+
+```{r clean}
+
+getRid = list(
+  Italy = as.Date("2020/08/15"),
+  'New York' = as.Date(paste0("2020/", c("05/06", "06/29", "08/06"))),
+  Canada = as.Date("2020/07/01")
+  )
+
+for(D in names(getRid))
+nCov_Merged <-
+  nCov_Merged[!(nCov_Merged$reporting_unit == D & 
+    nCov_Merged$time %in% getRid[[D]]), ]
+```
+
+
+
+```{r plotRaw, fig.cap='Raw data', fig.subcap=Scountry, fig.height=3, fig.width=4, fig.ncol=3, eval=TRUE, out.width=Pmisc::out.width(0.31)}
+
+forAxis <- seq(as.Date("2020/01/01"), len = 12, by = "1 month")
+D <- "New York"
+for (D in Scountry) {
+  xHere <- nCov_Merged[nCov_Merged$reporting_unit == D, ]
+  plot(xHere$time, pmax(0.8, xHere$dead),
+    log = "y", xaxt = "n",
+    ylim = c(0.7, max(xHere$dead)),
+    xlab = "", ylab = "deaths/day"
+  )
+  axis(1, as.numeric(forAxis), format(forAxis, "%b"))
+}
+```
+
+- $Y_{i}(t)$ is number of deaths for region $i$ at time $t$
+- $A_{i1}$ location of first peak, $A_{ij}$ between first peak and $k$th peak.
+- $C_{ij}$, $B_{ij}$, $K_{ij}$ are scaling factors for the $k$th peak, should be close to 1.
+
+$$
+\begin{aligned}
+Y_{it} \sim &  \text{Neg Binom}[\lambda_i(t), \tau_i] \\
+\lambda_i(t) & =  E_i \left[C_{i1} f(t;A_{i1}, B_{i1}, K_{i1}) ++ \sum_{j=1}^{J_i} C_{ij} C_{i1} f(t;A_{ij}+A_{i1}, B_{ij}B_{i1}, K_{ij}) + D_i\right]\\
+\end{aligned}
+$$
+
+
+```{r Stan-Data}
+nCov_Merged$timeNumeric <- as.numeric(nCov_Merged$time)
+nCov_Merged$logExpected <- log(nCov_Merged$Expected)
+nCov_Merged <- nCov_Merged[!is.na(nCov_Merged$dead), ]
+
+
+firstOnly <- setdiff(names(startC), names(startC2))
+nCov_MergedList <- list(
+  one = nCov_Merged[nCov_Merged$reporting_unit %in% firstOnly, ],
+  two = nCov_Merged[!nCov_Merged$reporting_unit %in% firstOnly, ]
+)
+
+dataForStan <- list()
+
+for (D in names(nCov_MergedList)) {
+  nCov_MergedList[[D]]$reporting_unit_fac <-
+    factor(as.character(nCov_MergedList[[D]]$reporting_unit))
+  nCov_MergedList[[D]]$reporting_unit_int <-
+    as.integer(nCov_MergedList[[D]]$reporting_unit_fac)
+
+  dataForStan[[D]] <- list(
+    N = nrow(nCov_MergedList[[D]]),
+    R = nlevels(nCov_MergedList[[D]]$reporting_unit_fac),
+    time_index = nCov_MergedList[[D]]$timeNumeric,
+    region_index = nCov_MergedList[[D]]$reporting_unit_int,
+    logExpected = nCov_MergedList[[D]]$logExpected,
+    y_obs = nCov_MergedList[[D]]$dead
+  )
+}
+
+#today = '2020_08_14'
+stanResFile <- file.path(
+  storeDir,
+  paste0("covidResWave2", today, ".rds"))
+```
+
+
+
+```{r Stan-Compile-run, eval=FALSE&!file.exists(stanResFile), include=FALSE}
+# sshfs englishbreakfast.pbrown.ca:. ~/mnt/eb
+
+nCov_code1 <- rstan::stanc(file = "wave1.stan") # convert to C++ code
+nCov_code2 <- rstan::stanc(file = "wave2.stan") # convert to C++ code
+nCov_model1 <- rstan::stan_model(stanc_ret = nCov_code1) # compile generated code
+nCov_model2 <- rstan::stan_model(stanc_ret = nCov_code2) # compile generated code
+
+thin <- 10
+iter <- 200 * thin
+chains <- 8
+
+thin <- 2
+iter <- 300 * thin
+chains <- 3
+
+nCov_fit_raw1 <- rstan::sampling(nCov_model1,
+  data = dataForStan[[1]], iter = iter,
+  chains = chains, cores = chains, thin = thin,
+  init = list(list(
+    A = as.numeric(firstPeak[levels(nCov_MergedList[[1]]$reporting_unit_fac)]),
+    B = rep(30, dataForStan[[1]]$R),
+    C = startC[levels(nCov_MergedList[[1]]$reporting_unit_fac)],
+    K = rep(2, dataForStan[[1]]$R),
+    eta = rep(0.0001, dataForStan[[1]]$R),
+    inv_sqrt_phi = rep(0.1, dataForStan[[1]]$R)
+  ))[rep(1, chains)],
+  control = list(
+    adapt_delta = 0.975,
+    max_treedepth = 16
+  )
+)
+
+nCov_fit_raw2 <- rstan::sampling(nCov_model2,
+  data = dataForStan[[2]], iter = iter,
+  chains = chains, cores = chains, thin = thin,
+  init = list(list(
+    A = as.numeric(firstPeak[levels(nCov_MergedList[[2]]$reporting_unit_fac)]),
+    A2 = timeToSecond[levels(nCov_MergedList[[2]]$reporting_unit_fac)],
+    B = rep(40, dataForStan[[2]]$R),
+    B2 = rep(40, dataForStan[[2]]$R),
+    C = startC[levels(nCov_MergedList[[2]]$reporting_unit_fac)],
+    C2 = startC2[levels(nCov_MergedList[[2]]$reporting_unit_fac)],
+    K = rep(2, dataForStan[[2]]$R),
+    K2 = rep(0.5, dataForStan[[2]]$R),
+    eta = rep(0.001, dataForStan[[2]]$R),
+    inv_sqrt_phi = rep(0.5, dataForStan[[2]]$R)
+  ))[rep(1, chains)],
+  control = list(
+    adapt_delta = 0.975,
+    max_treedepth = 16
+  )
+)
+
+# saveRDS(nCov_fit_raw, tempfile(format(Sys.time(),format='%Y_%m_%d'),
+#   "/store/patrick/covid", ".rds"))
+nCov_fitList <- list(
+  two = rstan::extract(nCov_fit_raw2),
+  one = rstan::extract(nCov_fit_raw1)
+)
+
+getRid <- c("lambda", "phiLong", "lp__", "data", "chains", "logKernel")
+for (D in names(nCov_fitList)) {
+  toUse <- setdiff(names(nCov_fitList[[D]]), getRid)
+
+  for (D2 in toUse) {
+    colnames(nCov_fitList[[D]][[D2]]) <-
+      levels(nCov_MergedList[[D]]$reporting_unit_fac)
+  }
+}
+
+nCov_fit <- nCov_fitList$two
+
+for (D in setdiff(
+  intersect(names(nCov_fitList[[1]]), names(nCov_fitList[[2]])),
+  getRid
+)) {
+  nCov_fit[[D]] <- cbind(
+    nCov_fit[[D]],
+    nCov_fitList$one[[D]][, setdiff(
+      colnames(nCov_fitList$one[[D]]),
+      colnames(nCov_fit[[D]]))]
+    )
+}
+toAdd= array(0, dim(nCov_fitList$one$A),
+  dimnames = dimnames(nCov_fitList$one$A))
+for(D in 
+  setdiff(names(nCov_fitList$two), 
+    names(nCov_fitList$one)) ) {
+  nCov_fit[[D]] = cbind(
+    nCov_fit[[D]],
+    toAdd[, setdiff(colnames(toAdd), colnames(nCov_fit[[D]]))]
+  )
+}
+
+# lapply(nCov_fit[toUse],   function(xx) apply(xx, 2, mean))
+
+nCov_fit$data <- nCov_Merged
+nCov_fit$chains <- chains
+saveRDS(nCov_fit, stanResFile)
+```
+
+
+```{r loadRes, eval=TRUE, include=FALSE}
+nCov_fit <- readRDS(stanResFile)
+getRid <- c("lambda", "phiLong", "lp__", "data", "chains", "logKernel")
+theParams <- setdiff(
+  names(nCov_fit), getRid
+)
+# paste0('scp englishbreakfast.pbrown.ca:',   stanResFile, ' .')
+```
+
+
+ 
+
+```{r calculateForecastsSetup}
+# D2 <- "California"
+
+Scountries = c('Colombia', 'Peru',
+  'Spain','Florida',
+  'Italy','Australia')
+
+# Scountries = levels(nCov_fit$data$reporting_unit_fac)
+
+Stime <- seq(as.Date("2020/02/01"),
+  as.Date("2020/12/01"),
+  by = "1 days"
+)
+StimeInt <- as.numeric(Stime)
+
+  Sglobal = c(0.25, 0.5, 0.8, 0.95)
+  Sprob = c(0.01, 0.025, 0.1, 0.25, 0.5)
+  Sprob <- sort(unique(signif(c(Sprob, 1 - Sprob), 10)))
+
+```
+ 
+```{r forDeathsPerMillion, cache=TRUE, include=FALSE, dev = "png", fig.align = "center", out.width=''}
+source("covid_expected_counts.R")
+forMmult1 = get_covid_expected_counts()
+forMmult2 = lapply(forMmult1, function(xx) {
+  rownames(xx) = xx[,1]
+  colnames(xx)[1] = 'reporting_unit'
+  xx[,c('reporting_unit', 'mMult')]
+})
+forMmult = do.call(rbind, forMmult2)
+forDeathsPerMillion = forMmult[grep("world.Georgia", rownames(forMmult), invert=TRUE), ]
+rownames(forDeathsPerMillion) = forDeathsPerMillion$reporting_unit
+
+```
+
+
+```{r calculateForecasts, include=FALSE}
+source("covid_polygons.R")
+
+
+lambda = cases = peakDates = list()
+
+for (D2 in colnames(nCov_fit$A)) {
+
+  cat(D2)
+  toSubset <- which(nCov_fit$data$reporting_unit == D2)
+  theData <- nCov_fit$data[toSubset, ]
+  theOffset <- nCov_fit$data[toSubset[1], "logExpected"]
+
+  lambdaSansEta1 <- rep(
+    exp(theOffset) * nCov_fit$C[, D2],
+    each = length(StimeInt)
+  ) *
+    sn::dsn(
+      rep(StimeInt, nrow(nCov_fit$C)),
+      rep(nCov_fit$A[, D2], each = length(StimeInt)),
+      rep(nCov_fit$B[, D2], each = length(StimeInt)),
+      rep(nCov_fit$K[, D2], each = length(StimeInt)),
+      log = FALSE
+    )
+
+  lambdaSansEta2 <- rep(
+    exp(theOffset) * nCov_fit$C2[, D2],
+    each = length(StimeInt)
+  ) *
+    sn::dsn(
+      rep(StimeInt, nrow(nCov_fit$C)),
+      rep(nCov_fit$A[, D2] + nCov_fit$A2[, D2], each = length(StimeInt)),
+      rep(nCov_fit$B2[, D2], each = length(StimeInt)),
+      rep(nCov_fit$K2[, D2], each = length(StimeInt)),
+      log = FALSE
+    )
+  if(all(is.nan(lambdaSansEta2))) {
+    lambdaSansEta2 = rep(0, length(lambdaSansEta2))
+  }
+
+  lambdaSansEta1 <- matrix(
+    lambdaSansEta1,
+    length(StimeInt), nrow(nCov_fit$C)
+  )
+  lambdaSansEta2 <- matrix(
+    lambdaSansEta2,
+    length(StimeInt), nrow(nCov_fit$C)
+  )
+  lambdaSansEta <- lambdaSansEta1 + lambdaSansEta2
+
+  eta <- exp(theOffset) * matrix(
+    nCov_fit$eta[, D2],
+    nrow(lambdaSansEta),
+    ncol(lambdaSansEta),
+    byrow = TRUE
+  )
+
+  lambdaHere <- lambdaSansEta + eta
+
+  maxWaves <- data.frame(
+    w1 = Stime[round(apply(lambdaSansEta1, 2, which.max))],
+    w2 = Stime[round(apply(lambdaSansEta2, 2, which.max))],
+    all = Stime[round(apply(lambdaHere, 2, which.max))]
+  )
+
+   globalIntList = mapply(function(Dglobal, time, lambda) {
+    as.data.frame(GET::central_region(GET::create_curve_set(list(
+        r = as.numeric(time),
+        obs = lambda
+      )), coverage = Dglobal))[, c("lo", "hi")]
+   },
+   Dglobal = Sglobal, MoreArgs = list(time =Stime, lambda=lambdaHere),
+   SIMPLIFY = FALSE)
+   names(globalIntList) = as.character(Sglobal)
+   globalIntList$median = 
+    data.frame(median = apply(lambdaHere, 1, median))
+   globalInt = do.call(cbind, globalIntList)
+
+
+
+  maxWavesSummary <- as.data.frame(
+    lapply(maxWaves, function(xx) {
+      as.Date(
+        round(
+          quantile(as.numeric(xx), prob = c(0.5, 0.025, 0.975))
+        ),
+        as.Date("1970/1/1")
+      )
+    })
+  )
+
+  toForecast <- which(Stime > max(theData$timeNumeric))
+  lambdaToForecast <- lambdaHere[toForecast, ]
+  set.seed(0)
+  cases1 <- matrix(
+    MASS::rnegbin(
+      n = length(lambdaToForecast),
+      mu = as.vector(lambdaToForecast),
+      theta = rep(nCov_fit$inv_sqrt_phi[, D2]^(-2), each = nrow(lambdaToForecast))
+    ),
+    nrow = nrow(lambdaToForecast)
+  )
+
+  peakDates[[D2]] <- maxWavesSummary
+
+  maxCasesSoFar = max(theData$dead, na.rm=TRUE)
+  maxDeaths = apply(rbind(cases1, maxCasesSoFar), 2, max)
+  totalDeathsSoFar = sum(theData$dead, na.rm=TRUE)
+
+  cumul1 = apply(cases1, 2, cumsum) + totalDeathsSoFar
+
+  intCumul <-
+    round(t(apply(cumul1, 1, quantile, prob = Sprob)))
+  colnames(intCumul) = gsub("[[:punct:]]", "_", colnames(intCumul))
+  colnames(intCumul) = gsub("_$", "", colnames(intCumul))
+
+
+
+  resxx = list(
+    data = theData,
+    time = Stime[toForecast],
+    cumul = cumul1,
+    dead = cases1,
+    timeIntensity = Stime,
+    intensity = lambdaHere,
+    intensityCI = globalInt,
+    cumulCI = intCumul,
+    maxDeaths = maxDeaths,
+    mMult = forDeathsPerMillion[D2,'mMult']
+    )
+
+
+  resxx$polygon =   covid_polygons2(resxx,
+                           col = "#E41A1C",
+                           verbose = FALSE) 
+
+  cases[[D2]] = resxx
+}
+```
+
+d
+
+```{r table, results='asis'}
+Squant <- c(median = 0.5, lower = 0.025, upper = 0.975)
+
+totalDeaths <- as.data.frame(do.call(rbind, lapply(cases, function(xx) {
+  quantile(xx$cumul[nrow(xx$cumul), ], prob = Squant)
+})))
+
+
+deathsPerMillion = totalDeaths * forDeathsPerMillion[
+  rownames(totalDeaths),'mMult']
+deathsPerMillion = round(deathsPerMillion)
+colnames(deathsPerMillion) = paste0('deaths per million_',names(Squant))
+
+colnames(totalDeaths) = paste0('total deaths_',names(Squant))
+totalDeathsUnrounded = totalDeaths
+totalDeaths$'total deaths_prec' = round(totalDeaths$'total deaths_u' / 
+  totalDeaths$'total deaths_l',1)
+for(D in grep('prec', colnames(totalDeaths), invert=TRUE, value=TRUE)) {
+  totalDeaths[,D] = round(totalDeaths[,D]/1000)
+}
+
+
+# dates of peaks of bumps
+
+peakDatesLong <- reshape2::melt(do.call(abind::abind, c(peakDates, list(along = 3))))
+colnames(peakDatesLong) <- c("quant", "bump", "reporting_unit", "time")
+peakDatesLong$time <- as.Date(peakDatesLong$time)
+peakDatesLong$timeInt <- as.integer(peakDatesLong$time)
+peakDatesLong$timeChar <- format(peakDatesLong$time, "%e %b")
+Squant2 <- names(Squant)
+names(Squant2) <- paste0(100 * Squant, "%")
+peakDatesLong$quant2 <- Squant2[as.character(peakDatesLong$quant)]
+peakDatesLong$quant2 <- factor(peakDatesLong$quant2, names(Squant))
+
+peakDatesLong$bump2 <- c(w1 = "peak 1", b2 = "peak 2", all = "largest peak")[
+  peakDatesLong$bump
+]
+
+peakDatesWide <- reshape2::dcast(peakDatesLong, reporting_unit ~ bump2 + quant2, value.var = "timeChar")
+rownames(peakDatesWide) <- peakDatesWide$reporting_unit
+peakDatesWide <- peakDatesWide[, setdiff(colnames(peakDatesWide), "reporting_unit")]
+
+
+
+# maximum daily deaths
+maxDeaths <- do.call(rbind, lapply(
+  cases,
+  function(xx) quantile(xx$maxDeaths, , prob = Squant)
+))
+colnames(maxDeaths) <- paste0("max deaths_", names(Squant))
+maxDeaths <- round(maxDeaths)
+
+
+
+historicalTable <- openxlsx::read.xlsx("../doc/Tables_Peru_Colombia.xlsx",
+  sheet = 4, cols = c(3, 20, 24, 28)
+)
+rownames(historicalTable) <- historicalTable$region
+colnames(historicalTable)[1] <- c("reporting_unit")
+# wilson's table
+if (FALSE) {
+  historicalTable2old <- openxlsx::read.xlsx("../doc/Tables_Peru_Colombia.xlsx",
+    sheet = 5, rows = 3:26, cols = 3:6
+  )
+  rownames(historicalTable2) <- historicalTable2$Country
+  colnames(historicalTable2) <-
+    c("reporting_unit", "Pneumonia_hist", "pctOfTotal_total")
+}
+historicalTable2 <- openxlsx::read.xlsx(
+  "Table age 20 Plus Repiratory death_Pop_WHODB (added Colombia_Peru 15-08-2020).xlsx",
+  rows = 3:27,
+  sheet = 1, cols = 3:6
+)
+rownames(historicalTable2) <- historicalTable2$Country
+colnames(historicalTable2) <-
+  c("reporting_unit", "Pneumonia_hist", "pctOfTotal_total")
+
+
+historicalTable2$corrected_frac <- NA
+historicalTable3 <- rbind(
+  historicalTable[setdiff(
+    rownames(historicalTable),
+    c("USA", "UK", rownames(historicalTable2))
+  ), ],
+  historicalTable2[
+    setdiff(rownames(historicalTable2), "Total"),
+    colnames(historicalTable)
+  ]
+)
+
+colnames(historicalTable3) <- gsub(
+  "_hist$|^pctOfTotal_",
+  "", colnames(historicalTable3)
+)
+
+daysOverThreshold <- function(threshold, xxx) {
+  apply(xxx > threshold, 2, sum)
+}
+
+daysOverThresholdsList <- mapply(function(Dregion, caseData, histTable) {
+  theThreshold <- histTable[Dregion, c("Pneumonia", "total")] / 365.25
+  resSims <- mapply(daysOverThreshold,
+    threshold = theThreshold,
+    MoreArgs = list(xxx = caseData$dead)
+  )
+  resData <- apply(outer(caseData$data$dead, theThreshold, ">"), 2, sum)
+  round(apply(resSims + matrix(resData, nrow(resSims), ncol(resSims), byrow = TRUE),
+    2, quantile,
+    prob = Squant, na.rm = TRUE
+  ))
+},
+Dregion = names(cases),
+caseData = cases,
+MoreArgs = list(histTable = historicalTable3),
+SIMPLIFY = FALSE
+)
+daysOver <- do.call(abind::abind, c(daysOverThresholdsList, list(along = 3)))
+dimnames(daysOver)[[1]] <- names(Squant)
+names(dimnames(daysOver)) <- c("quant", "variable", "reporting_unit")
+daysOverLong <- reshape2::melt(daysOver)
+
+addToDaysOver <- reshape2::melt(
+  historicalTable3[
+    dimnames(daysOver)$reporting_unit,
+    c("reporting_unit", "total", "Pneumonia")
+  ],
+  id.var = "reporting_unit"
+)
+addToDaysOver$quant <- "ref"
+addToDaysOver$value <- round(addToDaysOver$value / 1000)
+
+daysOverWide <- reshape2::dcast(
+  rbind(daysOverLong, na.omit(addToDaysOver)[, colnames(daysOverLong)]),
+  reporting_unit ~ variable + quant
+)
+rownames(daysOverWide) <- daysOverWide$reporting_unit
+daysOverWide <- daysOverWide[, setdiff(colnames(daysOverWide), "reporting_unit")]
+colnames(daysOverWide) <- gsub(
+  "^total_", "Days over avg_",
+  colnames(daysOverWide)
+)
+colnames(daysOverWide) <- gsub(
+  "^Pneumonia_", "Pneumonia days_",
+  colnames(daysOverWide)
+)
+
+fracPneumonia <- totalDeathsUnrounded[, 1, drop = FALSE] / historicalTable3[rownames(totalDeathsUnrounded), "Pneumonia"]
+
+percentOfTotal <- round(100 * totalDeathsUnrounded / historicalTable3[rownames(totalDeathsUnrounded), "total"])
+colnames(percentOfTotal) <- gsub("^.*_", "pct of total_", colnames(percentOfTotal))
+
+
+summaryTable <- cbind(
+  " " = Scountries,
+  totalDeaths[Scountries, ],
+  deathsPerMillion[Scountries, ],
+  maxDeaths[Scountries, ],
+  daysOverWide[Scountries, ],
+  peakDatesWide[Scountries, ],
+  "Ratio Pneumonia" = round(fracPneumonia[Scountries, ], 1),
+  percentOfTotal[Scountries, ]
+)
+write.csv(summaryTable, "wave2summary.csv")
+colnames(summaryTable) <- gsub(
+  "^total deaths_", "total deaths, thousands_",
+  colnames(summaryTable)
+)
+```
+
+
+
+```{r table1}
+Pmisc::mdTable(
+  summaryTable[Scountries, c(1, grep("^total|max|million", colnames(summaryTable)))],
+  guessGroup = TRUE
+)
+```
+```{r table2}
+Pmisc::mdTable(
+  summaryTable[Scountries, c(1, grep("peak", colnames(summaryTable)))],
+  guessGroup = TRUE
+)
+```
+```{r table3}
+Pmisc::mdTable(
+  summaryTable[Scountries, c(1, grep("Pneumonia|^pct", colnames(summaryTable)))],
+  guessGroup = TRUE
+)
+```
+
+
+```{r plotIntensites, fig.cap='intensities', fig.subcap = Scountries, fig.ncol=2, fig.height=4, fig.width=6}
+
+theYlimIntens = list(
+  Italy = 1200, Florida = 450, Peru = 450,
+  Spain = 1200, Australia = 450, Colombia = 450)
+
+toHighlight = round(seq(1, nrow(nCov_fit$A), len=8))
+Scol = RColorBrewer::brewer.pal(length(toHighlight), 'Set2')
+theXlimIntens = as.Date(c('2020/02/15', '2020/11/09'))
+
+
+forY = 10^(0:5)
+
+for (D2 in Scountries) {
+  toSubset <- which(nCov_fit$data$reporting_unit == D2)
+  theData <- nCov_fit$data[toSubset, ]
+
+
+
+
+  plot(Stime, cases[[D2]]$polygon$medians$unscaled$intens[,2],
+    type='n',
+    yaxs = "i", xaxs = "i", yaxt  = 'n',
+    ylab = "deaths", xlim = theXlimIntens,
+    ylim = log(c(0.4, theYlimIntens[[D2]]))
+    )
+  sp::plot(cases[[D2]]$polygon$unscaled$intens,
+    col = cases[[D2]]$polygon$unscaled$intens$col,
+    lty = 0, add=TRUE)
+  lines(cases[[D2]]$polygon$medians$unscaled$intens,
+    col = 'black', lwd=2)
+#  cases[[D2]]$polygon$medians$col, lwd=2)
+
+
+  axis(2, log(forY), forY)
+
+  points(theData$timeNumeric, 
+    log(pmax(0.5, theData$dead)),
+    col = "blue",
+    cex = 0.8
+  )
+
+
+#  matlines(Stime, log(cases[[D2]]$intensity[, toHighlight]),
+#    col = Scol, lty = 1, lwd = 2)
+if(FALSE) {
+  segments(
+    unlist(  peakDates[[D2]][2, 1:2]), 0,
+    unlist(  peakDates[[D2]][3, 1:2]), 0
+  )
+  text(unlist(  peakDates[[D2]][1, 1:2]), 0,
+    format(  peakDates[[D2]][1, 1:2], "%e"),
+    pos = 1, cex = 0.6, offset = 0.2
+  )
+}
+}
+```
+
+
+
+
+```{r plotCumulative, fig.cap='Cumulative', fig.subcap = Scountries, fig.ncol=2, fig.height=4, fig.width=6}
+
+
+theXlimCumul = theXlimIntens
+theXlimCumul[1] = as.Date('2020/07/01')
+
+theYlimCumul = list(
+  Italy = c(12,55), Florida = c(0.2,28), Peru = c(12,55),
+  Spain = c(12,55), Australia = c(0.2, 28), Colombia = c(12,55)
+  )
+
+  for(D2 in Scountries) {
+    datHere = cases[[D2]]$data
+    datHere$cumul = cumsum(datHere$dead)
+
+
+
+
+  plot(Stime, rep(1, length(Stime)),
+    type='n',
+    yaxs = "i", xaxs = "i", yaxt  = 'n',
+    ylab = "deaths", xlim = theXlimCumul,
+    ylim = log(1000*theYlimCumul[[D2]])
+    )
+    theY = axisTicks(log10(exp(par('usr')[3:4])), log=TRUE)
+#    axis(2, theY, gsub("0{3}$", "K", theY))
+    axis(2, log(theY), theY/1000)
+  sp::plot(cases[[D2]]$polygon$unscaled$cumul,
+    col = cases[[D2]]$polygon$unscaled$cumul$col,
+    lty = 0, add=TRUE)
+  lines(cases[[D2]]$polygon$medians$unscaled$cumul,
+    col = 'black', lwd=2)
+#  cases[[D2]]$polygon$medians$col, lwd=2)
+
+
+# matlines(cases[[D2]]$time, log(cases[[D2]]$cumul[,toHighlight]),
+ # col = Scol,lty=1, lwd=2)
+  points(datHere$time, log(datHere$cumul), col='blue', cex=0.8)
+
+  matlines(cases[[D2]]$time, cases[[D2]]$cumul[, toHighlight],
+    col = Scol, lty = 1, lwd = 2
+  )
+  points(datHere$time, datHere$cumul, col = "red")
+}
+```
+
+```{r plotChains, fig.cap='trace plots', fig.subcap = paste(rep(theParams, each=nlevels(nCov_fit$data$reporting_unit_fac)), rep(levels(nCov_fit$data$reporting_unit_fac), length(theParams))),fig.height=3, fig.width=6, fig.ncol=2, eval=FALSE}
+for (D1 in theParams) {
+  for (D2 in levels(nCov_fit$data$reporting_unit_fac)) {
+    matplot(matrix(nCov_fit[[D1]][, D2], ncol = nCov_fit$chains),
+      type = "l", xlab = "", ylab = ""
+    )
+  }
+}
+```

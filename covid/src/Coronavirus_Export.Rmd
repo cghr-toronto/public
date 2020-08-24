@@ -1,0 +1,521 @@
+
+```{r header, echo=FALSE}
+Pmisc::markdownHeader(
+  title = "Covid deaths",
+  css = "webpage.css"
+)
+```
+
+```{r setup, include = FALSE}
+# knitr::knit_hooks$set(
+#   marginsp = function(before, options, envir) {
+#     if (!before) {
+#       return()
+#     }
+#     # use small margins
+#     par(
+#       mar = c(
+#         1.5 + 0.9 * options$marginsp,
+#         1.5 + 0.9 * options$marginsp, 0.2, 0.2
+#       ),
+#       mgp = c(1.45, 0.45, 0), cex = 1
+#     )
+#   }
+# )
+
+knitr::opts_chunk$set(
+  fig.height = 4, fig.width = 4, marginsp = TRUE,
+  out.width = Pmisc::out.width(1.1)
+)
+
+if (any(commandArgs() == "mdToTex")) {
+  # if you'll be converting md to tex, can use the following
+  knitr::knit_hooks$set(plot = knitr::hook_plot_tex)
+  knitr::opts_chunk$set(dev = "pdf", fig.align = "center")
+  mdToTex <- TRUE
+} else {
+  knitr::knit_hooks$set(
+    plot = function(x, options) {
+      base <- knitr::opts_knit$get("base.url")
+      if (is.null(base)) {
+        base <- ""
+      }
+
+      fig.num <- options$fig.num
+      if (is.null(fig.num)) {
+        fig.num <- 1
+      }
+
+      cap <- options$fig.cap
+      scap <- options$fig.subcap
+      if (is.null(cap)) {
+        cap <- ""
+      }
+      if (is.null(scap)) {
+        scap <- rep(cap, fig.num)
+      }
+
+      if (length(options$out.width)) {
+        options$out.width <- rep_len(options$out.width, fig.num)
+      }
+
+      result <- sprintf("![%s](%s%s) ", scap, base, x)
+      if (any(options$fig.ncol == 0)) {
+        return(result)
+      }
+
+      if (length(scap)) {
+        fig.cur <- options$fig.cur
+        if (is.null(fig.cur)) {
+          fig.cur <- 1
+        }
+
+        fig.ncol <- options$fig.ncol
+        if (is.null(fig.ncol)) {
+          fig.ncol <- 1
+        }
+        Drow <- floor((fig.cur - 1) / fig.ncol) + 1
+        Dcol <- fig.cur - (Drow - 1) * fig.ncol
+
+        if (length(options$out.width)) {
+          result <- paste0(
+            gsub("[[:space:]]*$", "", result),
+            "{width=", options$out.width[fig.cur], "}"
+          )
+        }
+
+        if ((Dcol == fig.ncol) | (fig.cur == fig.num)) {
+          Dend <- fig.ncol * Drow
+          result <- paste(result, "\n\n", sep = "")
+        } else {
+          result <- paste(result, "\n", sep = "")
+        }
+
+        if (fig.cur == 1) {
+          result <- paste("\n\n## ", cap, "\n\n",
+            "<div id=\"", options$fig.lp, options$label,
+            "\">\n\n", result,
+            sep = ""
+          )
+        }
+        if (fig.cur == fig.num) {
+          result <- paste(result, cap, "\n</div>\n\n", sep = "")
+        }
+      }
+      result
+    }
+  )
+  knitr::opts_chunk$set(dev = "png")
+  mdToTex <- FALSE
+}
+
+knitr::opts_chunk$set(
+  echo = FALSE,
+  out.width = Pmisc::out.width(0.32),
+  fig.ncol = 3,
+  res = 200
+)
+
+### Load libraries
+# library('nCov2019')
+library("knitr")
+# library('rstan')
+# library("MASS")
+source("covid_expected_counts.R")
+source("covid_data.R")
+source("forecast.R")
+```
+
+
+
+```{r Stan-Data}
+# Names for Stan result and forecast files
+
+storeDir <- file.path("/store", "patrick", "covid")
+if (!dir.exists(storeDir)) storeDir <- "."
+
+
+today <- format(Sys.time(), format = "%Y_%m_%d")
+# today <- "2020_07_15"
+
+stanResFile <- file.path(
+  storeDir,
+  paste0("covidRes", today, ".rds")
+)
+
+forecastFile <- file.path(
+  storeDir,
+  paste0("covidForecast", today, ".rds")
+)
+```
+
+```{r stanResLoad}
+
+nCov_fit <- readRDS(stanResFile)
+ranefNames <- c("A", "B", "C", "K", "eta")
+theSamples <- do.call(abind::abind, c(nCov_fit[ranefNames], list(along = 3)))
+dimnames(theSamples) <- list(
+  sim = 1:(dim(theSamples)[1]),
+  region = levels(nCov_fit$data$reporting_unit_fac),
+  ranef = ranefNames
+)
+nCov_fit$data <- nCov_fit$data[
+  order(nCov_fit$data$reporting_unit, nCov_fit$data$time),
+]
+```
+
+
+```{r showData, echo=TRUE, eval=TRUE}
+# Selected data from previous 9 days from France, New York, Spain
+nCov_fit$data[
+  nCov_fit$data$time >= (max(nCov_fit$data$time) - 8) &
+    nCov_fit$data$reporting_unit %in% c("France", "New York", "Spain"),
+  c("country", "reporting_unit", "time", "Expected", "dead")
+]
+```
+
+
+
+
+```{r ForecastingYcalc, eval=TRUE, include=FALSE}
+if (!file.exists(forecastFile)) {
+  if (as.numeric(benchmarkme::get_ram()) < 50000000000) {
+    ncores <- floor(parallel::detectCores() / 3)
+  } else {
+    ncores <- floor(parallel::detectCores() / 1.5)
+  }
+  theForecasts1 <- covid_forecast(
+    theSamples,
+    nCov_fit,
+    mc.cores = ncores,
+    regionNamesAll = #dimnames(theSamples)$region,
+    c('New York','France','Canada', 'Germany',
+      'Italy','Brazil','Colombia', 'Spain',
+      'Mexico','Ecuador','Florida','California'),
+    min_deaths = 40,
+    Stime =  seq(
+      as.Date("2020/01/01"),
+      as.Date("2020/11/30"), by = "1 days"),
+    usAgg=FALSE
+  )
+  # ,
+  #  regionNamesAll = intersect(c(
+  #    region_names,
+  #    state_names
+  #    ),
+  #  dimnames(theSamples)$region))
+  saveRDS(theForecasts1, forecastFile)
+}
+theForecasts1 <- readRDS(forecastFile)
+Stime <- theForecasts1$time
+StimeInt <- as.numeric(Stime)
+
+# List containing sublists for each reporting unit (countries, US states,
+# Hubei). Sublists contain cases, lambda, cumulative, peak, and intervals
+theForecasts <- theForecasts1$forecast[
+  setdiff(names(theForecasts1$forecast),'United States Aggregated')]
+```
+
+
+```{r popData, include=FALSE}
+# Expected counts for countries in the world, US states, and Hubei in China
+covid_expected <- get_covid_expected_counts()
+
+# Observed and log expected data for all reporting units, from Coronavirus_Stan
+nCov_All <- nCov_fit$data
+```
+
+
+```{r ForecastingYsetup, eval=TRUE}
+region_names <- c(
+  "United States",
+  "Italy", "France",
+  "Spain",
+  "United Kingdom",
+  "Belgium",
+  "Germany",
+  "Iran", "Netherlands",
+
+  "Hubei", "Brazil", "Turkey",
+  "Canada",
+  "Sweden",
+  "Switzerland",
+  "Mexico", "Ireland",
+  "Portugal",
+  "India", "Russia"
+) # ,'Norway')
+
+# Data excluding individual US states
+nCov_world <- nCov_fit$data[nCov_fit$data$reporting_unit == nCov_fit$data$country | nCov_fit$data$reporting_unit == "Hubei", ]
+
+# Total deaths for each country + Hubei
+worldFreq <- sort(tapply(nCov_world$dead, nCov_world$country, sum),
+  decreasing = TRUE
+)
+region_names <- setdiff(names(worldFreq), "China")
+
+# Get total deaths for individual US states
+state_names <- c(
+  "New York", "Washington", "California", "Louisiana", "Michigan",
+  "New Jersey", "Massachusetts", "Florida", "Illinois", "Pennsylvania", "Connecticut"
+)
+nCov_US <- nCov_fit$data[nCov_fit$data$reporting_unit != "United States" & nCov_fit$data$country == "United States", ]
+usFreq <- sort(tapply(nCov_US$dead, nCov_US$reporting_unit, sum), decreasing = TRUE)
+state_names <- names(usFreq)
+```
+
+
+
+```{r historicalTable, include=FALSE}
+# Prep historical data on all cause and pneumonia deaths for reporting units,
+# combine with expected data
+
+# Data on deaths and pneumonia deaths in US states
+historicalTableUs <- merge(
+  read.csv("../doc/all_deaths_age20pl_all_states_2015_04292020.csv"),
+  read.csv("../doc/PI_deaths_all_states_2015_04292020.csv")
+)
+historicalTableUs$reporting_unit <- names(theForecasts)[match(
+  historicalTableUs[, 1], toupper(names(theForecasts))
+)]
+toRename <- c(
+  "DISTRICT OF COLUMBIA" = "Washington, D.C.",
+  "GEORGIA" = "Georgia (US)"
+)
+historicalTableUs[
+  match(names(toRename), historicalTableUs[, 1]),
+  "reporting_unit"
+] <- toRename
+historicalTableUs$pneumTotal <- historicalTableUs$pi
+historicalTableUs$allCauseTotal <- historicalTableUs$death20pl
+historicalTableUs <- historicalTableUs[
+  ,
+  c("reporting_unit", "pneumTotal", "allCauseTotal")
+]
+historicalTableUs <- historicalTableUs[
+  !is.na(historicalTableUs$reporting_unit),
+]
+
+# Global respiratory deaths from pneumonia and all causes
+historicalTableGlobal1 <- read.csv(
+  "../doc/Table age 20 Plus Repiratory death_Pop_WHODB.csv",
+  skip = 2, header = TRUE, stringsAsFactors = FALSE
+)
+htUsAgg <- historicalTableGlobal1[
+  historicalTableGlobal1$Country == "United States", ,
+  drop = FALSE
+]
+htUsAgg$Country <- "United States Aggregated"
+historicalTableGlobal <- rbind(
+  htUsAgg, historicalTableGlobal1
+)
+
+historicalTableGlobal <- historicalTableGlobal[
+  seq(1, min(which(historicalTableGlobal$Country == "")) - 1),
+]
+historicalTableGlobal <- historicalTableGlobal[, c(3:5)]
+if (!"Hubei" %in% rownames(historicalTableGlobal)) {
+  historicalTableGlobal <- rbind(
+    historicalTableGlobal,
+    c("Hubei", "6004", "349000")
+  )
+}
+for (D in names(historicalTableGlobal)[-1]) {
+  historicalTableGlobal[, D] <- as.numeric(gsub(
+    ",", "",
+    historicalTableGlobal[, D]
+  ))
+}
+colnames(historicalTableGlobal) <-
+  c("reporting_unit", "pneumTotal", "allCauseTotal")
+historicalTableGlobal$region <- "Global"
+historicalTableUs$region <- "US"
+
+# Row bind global table with US states table
+historicalTable <- rbind(
+  historicalTableGlobal,
+  historicalTableUs[, colnames(historicalTableGlobal)]
+)
+historicalTable$allCauseDaily <- historicalTable$allCauseTotal / 365
+historicalTable$pneumDaily <- historicalTable$pneumTotal / 365
+
+# Prep data from covid_expected
+covidExpectedUsToMerge <- covid_expected$us
+colnames(covidExpectedUsToMerge) <- colnames(covid_expected$world)
+covidExpectedUsToMerge$country <- gsub(
+  "^Georgia$", "Georgia (US)",
+  covidExpectedUsToMerge$country
+)
+covidExpectedChinaToMerge <- covid_expected$china
+colnames(covidExpectedChinaToMerge) <- gsub(
+  "province", "country",
+  colnames(covidExpectedChinaToMerge)
+)
+# Bind world, US state, and Hubei data into one data frame
+expectedTable <- rbind(
+  covid_expected$world,
+  covidExpectedChinaToMerge,
+  covidExpectedUsToMerge
+)
+
+# Merge data from covid_expected to historicalTable
+historicalTable <- merge(historicalTable, expectedTable,
+  by.x = "reporting_unit", by.y = "country"
+)
+historicalTable <- historicalTable[order(historicalTable$region, historicalTable$reporting_unit), ]
+write.csv(historicalTable, file = "../doc/historicalTable.csv")
+```
+
+```{r Samples-to-Spreadsheet, include=FALSE}
+# Compute summaries of forecast and Stan data
+
+Sthreshold <- historicalTable$pneumDaily
+names(Sthreshold) <- historicalTable$reporting_unit
+# get rid of Georgia, change Georgia (US) to Georgia
+Sthreshold <- Sthreshold[setdiff(names(Sthreshold), "Georgia")]
+names(Sthreshold) <- gsub(" .US.$", "", names(Sthreshold))
+toSave <- forecast_summaries(
+  theForecasts,
+  Stime,
+  threshold = Sthreshold,
+  nCov_data = nCov_fit$data
+)
+
+# Remove unnecessary columns
+drops <- c("mMult", "Expected")
+removed <- toSave$intervalsPerMillion[, !names(toSave$intervalsPerMillion) %in% drops]
+removed <- removed[, !grepl("cases", colnames(removed))]
+# removed <- subset(removed, !grepl('2020-01', removed$time))
+
+# Remove US states from intervalsPerMillion, and move to another table
+splitTable <- split(removed, removed$reporting_unit %in%
+  historicalTableUs$reporting_unit)
+toSave$intervalsPerMillion <- splitTable$"FALSE"
+toSave$intervalsPerMillionUSA <- splitTable$"TRUE"
+
+# Save each of the dataframes in toSave in a directory named with today's date
+theDir <- format(Sys.time(), format = "%Y_%m_%d")
+theDir <- format(today, format = "%Y_%m_%d")
+dir.create(theDir, showWarnings = FALSE)
+for (D in names(toSave)) {
+  write.csv(toSave[[D]],
+    file = file.path(theDir, paste0(D, ".csv")),
+    row.names = FALSE
+  )
+}
+# write.csv(toSave$intervals, 'publicCovid/intervals.csv')
+
+cat("\n\nssh masalachai.pbrown.ca mkdir /var/www/pbrown.ca/html/covid/",
+  theDir, "\n",
+  #    'scp -r ', theDir, '/* masalachai.pbrown.ca:/var/www/pbrown.ca/html/covid/',
+  "scp Coronavirus_Export.html masalachai.pbrown.ca:/var/www/pbrown.ca/html/covid/",
+  theDir, "\n\n",
+  sep = ""
+)
+```
+
+
+```{r plotSetup}
+xlim <- as.Date(c("2020/2/15", "2020/7/15"))
+Ssamples <- unique(round(seq(1, dim(theForecasts[[1]]$cumulative)[2],
+  len = 1000
+)))
+forX <- seq(as.Date("2020/3/1"), as.Date("2020/10/1"),
+  by = "1 month"
+)
+
+forYcount <- 10^seq(0, 4)
+forYcount <- sort(unique(c(forYcount, forYcount / 2, forYcount / 5)))
+forYtext <- forYcount
+
+
+stateNames <- intersect(names(theForecasts), covid_expected$us$state)
+countryNames <- setdiff(names(theForecasts), stateNames)
+```
+
+```{r forecastsLog, fig.cap='count forecasts, log scale', fig.subcap = countryNames, warning=FALSE, fig.height=4, fig.width=5}
+par(mar = c(3, 3, 0, 0), mgp = c(3, 0.4, 0), bty = "l")
+toForecast <- "lambda"
+for (ii in knitr::opts_current$get()$fig.subcap) {
+  yForecast <- theForecasts[[ii]][[toForecast]]
+  lambdaMean <- apply(yForecast, 1, median)
+
+  y_obs <- nCov_All[which(nCov_All$reporting_unit ==
+    gsub(" Aggregated", "", ii)), ]
+  maxy <- max(c(
+    5, 2 * max(y_obs$dead),
+    1.2 * max(lambdaMean[Stime < quantile(as.numeric(xlim), 0.7)])
+  ))
+  theLower <- 0.5
+
+  matplot(Stime, pmax(yForecast[, Ssamples], theLower),
+    lty = 1, col = mapmisc::col2html("black", 0.03),
+    xaxt = "n", xlim = xlim,
+    type = "l", xlab = "", ylab = "cases", yaxt = "n",
+    ylim = c(theLower, maxy), log = "y", yaxs = "i"
+  )
+  lines(StimeInt, lambdaMean, lwd = 3, col = "green")
+  axis(1, as.numeric(forX), format(forX, "%b"))
+  axis(2, forYcount, forYtext)
+  points(y_obs[, "time"], pmax(y_obs[, "dead"], theLower),
+    pch = 16, col = mapmisc::col2html("red", 0.8)
+  )
+}
+```
+
+```{r forecastsLogState, ref.label='forecastsLog', fig.cap='count forecasts, log scale, us states', fig.subcap = state_names, warning=FALSE}
+```
+
+
+```{r tableAll}
+covSummaries <- toSave$summaries
+
+summaryTableFull1 <- aggregate(covSummaries[, c("totalDeaths", "peak", "maxDaily", "overThreshold")],
+  covSummaries[, "reporting_unit", drop = FALSE],
+  FUN = quantile, prob = c(0.5, 0.025, 0.975), na.rm = TRUE, type = 3
+)
+summaryTableFull <- do.call(data.frame, summaryTableFull1)
+
+for (D in grep("^(peak|over)[.]", colnames(summaryTableFull),
+  value = TRUE
+)) {
+  summaryTableFull[[D]] <- format(
+    as.Date(summaryTableFull[[D]], as.Date("1970/1/1")),
+    "%e %b"
+  )
+}
+
+
+rownames(summaryTableFull) <- summaryTableFull$reporting_unit
+colnames(summaryTableFull) <- gsub(
+  "[.]50[.]", "_est",
+  colnames(summaryTableFull)
+)
+colnames(summaryTableFull) <- gsub(
+  "[.]2[.]5[.]", "_low",
+  colnames(summaryTableFull)
+)
+colnames(summaryTableFull) <- gsub(
+  "[.]97[.]5[.]", "_high",
+  colnames(summaryTableFull)
+)
+
+summaryTableFull <- summaryTableFull[
+  order(summaryTableFull$totalDeaths_est, decreasing = TRUE),
+]
+
+summaryTable <- summaryTableFull[
+  setdiff(rownames(summaryTableFull), covid_expected$us$state),
+]
+
+summaryTableHigh <- summaryTable[summaryTable[, "totalDeaths_est"] > 1000, ]
+summaryTableHigh[, grep("^totalDeaths", colnames(summaryTableHigh))] <- round(
+  summaryTableHigh[, grep("^totalDeaths", colnames(summaryTableHigh))] / 1000
+)
+
+
+Pmisc::mdTable(summaryTableHigh,
+  digits = 3, guessGroup = TRUE,
+  caption = "Summary table"
+)
+```

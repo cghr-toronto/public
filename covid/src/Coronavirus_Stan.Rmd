@@ -1,0 +1,250 @@
+```{r header, echo=FALSE}
+Pmisc::markdownHeader(
+  title = "Covid deaths",
+  css = "webpage.css"
+)
+```
+
+```{r setup, include = FALSE}
+# knitr::knit_hooks$set(
+#   marginsp = function(before, options, envir) {
+#     if (!before) {
+#       return()
+#     }
+#     # use small margins
+#     par(
+#       mar = c(
+#         1.5 + 0.9 * options$marginsp,
+#         1.5 + 0.9 * options$marginsp, 0.2, 0.2
+#       ),
+#       mgp = c(1.45, 0.45, 0), cex = 1
+#     )
+#   }
+# )
+
+
+if (any(commandArgs() == "mdToTex")) {
+  # if you'll be converting md to tex, can use the following
+  knitr::knit_hooks$set(plot = knitr::hook_plot_tex)
+  knitr::opts_chunk$set(dev = "pdf", fig.align = "center")
+  mdToTex <- TRUE
+} else {
+  knitr::knit_hooks$set(
+    plot = function(x, options) {
+      base <- knitr::opts_knit$get("base.url")
+      if (is.null(base)) {
+        base <- ""
+      }
+
+      fig.num <- options$fig.num
+      if (is.null(fig.num)) {
+        fig.num <- 1
+      }
+
+      cap <- options$fig.cap
+      scap <- options$fig.subcap
+      if (is.null(cap)) {
+        cap <- ""
+      }
+      if (is.null(scap)) {
+        scap <- rep(cap, fig.num)
+      }
+
+      if (length(options$out.width)) {
+        options$out.width <- rep_len(options$out.width, fig.num)
+      }
+
+      result <- sprintf("![%s](%s%s) ", scap, base, x)
+      if (any(options$fig.ncol == 0)) {
+        return(result)
+      }
+
+      if (length(scap)) {
+        fig.cur <- options$fig.cur
+        if (is.null(fig.cur)) {
+          fig.cur <- 1
+        }
+
+        fig.ncol <- options$fig.ncol
+        if (is.null(fig.ncol)) {
+          fig.ncol <- 1
+        }
+        Drow <- floor((fig.cur - 1) / fig.ncol) + 1
+        Dcol <- fig.cur - (Drow - 1) * fig.ncol
+
+        if (length(options$out.width)) {
+          result <- paste0(
+            gsub("[[:space:]]*$", "", result),
+            "{width=", options$out.width[fig.cur], "}"
+          )
+        }
+
+        if ((Dcol == fig.ncol) | (fig.cur == fig.num)) {
+          Dend <- fig.ncol * Drow
+          result <- paste(result, "\n\n", sep = "")
+        } else {
+          result <- paste(result, "\n", sep = "")
+        }
+
+        if (fig.cur == 1) {
+          result <- paste("\n\n## ", cap, "\n\n",
+            "<div id=\"", options$fig.lp, options$label,
+            "\">\n\n", result,
+            sep = ""
+          )
+        }
+        if (fig.cur == fig.num) {
+          result <- paste(result, cap, "\n</div>\n\n", sep = "")
+        }
+      }
+      result
+    }
+  )
+  knitr::opts_chunk$set(dev = "png")
+  mdToTex <- FALSE
+}
+
+knitr::opts_chunk$set(
+  echo = FALSE,
+  out.width = Pmisc::out.width(0.32),
+  fig.ncol = 3,
+  res = 200
+)
+```
+
+```{r load libraries, include=FALSE}
+### Load libraries
+# library('nCov2019')
+library("knitr")
+# library('rstan')
+# library("MASS")
+
+
+source("covid_expected_counts.R")
+source("covid_data.R")
+source("forecast.R")
+```
+
+```{r Import data}
+# Import data produced by Coronavirus_Data.Rmd
+storeDir <- file.path("/store", "patrick", "covid")
+if (!dir.exists(storeDir)) storeDir <- "."
+
+
+today <- format(Sys.time(), format = "%Y_%m_%d")
+#today <- "2020_08_14"
+
+dataFile <- file.path(
+  storeDir,
+  paste0("covidData", today, ".rds")
+)
+
+nCov_Merged <- readRDS(dataFile)
+```
+
+```{r Stan-Data}
+
+
+# Add in data for Stan
+nCov_Merged$timeNumeric <- as.numeric(nCov_Merged$time)
+nCov_Merged$reporting_unit_fac <- factor(nCov_Merged$reporting_unit)
+nCov_Merged$reporting_unit_int <- as.integer(nCov_Merged$reporting_unit_fac)
+nCov_Merged$logExpected <- log(nCov_Merged$Expected)
+
+startDate <- unlist(as.list(by(
+  nCov_Merged, nCov_Merged$reporting_unit_int,
+  function(xx) xx[which.max(xx$dead), "timeNumeric"]
+)))
+
+dataForStan <- list(
+  N = nrow(nCov_Merged),
+  R = nlevels(nCov_Merged$reporting_unit_fac),
+  time_index = nCov_Merged$timeNumeric,
+  region_index = nCov_Merged$reporting_unit_int,
+  logExpected = nCov_Merged$logExpected,
+  #                     expectedDividedBy100 = nCov_All$Expected/100,
+  y_obs = nCov_Merged$dead
+)
+
+storeDir <- file.path("/store", "patrick", "covid")
+if (!dir.exists(storeDir)) storeDir <- "."
+
+
+today <- format(Sys.time(), format = "%Y_%m_%d")
+# today = '2020_05_05'
+
+stanResFile <- file.path(
+  storeDir,
+  paste0("covidRes", today, ".rds")
+)
+```
+
+```{r forOrangepeckoe, include=FALSE}
+cat("\nscp englishbreakfast.pbrown.ca:/store/patrick/covid/covidRes",
+  format(Sys.time(), format = "%Y_%m_%d"), ".rds .\n\n",
+  sep = ""
+)
+```
+
+```{r Stan-Compile-run, eval=!file.exists(stanResFile), include=FALSE}
+
+nCov_code <- rstan::stanc(file = "Coronavirus_Model.stan") # convert to C++ code
+nCov_model <- rstan::stan_model(stanc_ret = nCov_code) # compile generated code
+
+thin <- 10
+iter <- 400 * thin
+chains <- 8
+
+nCov_fit_raw <- rstan::sampling(nCov_model,
+  data = dataForStan, iter = iter,
+  chains = chains, cores = chains, thin = thin,
+  init = list(list(
+    A = startDate,
+    B = rep(50, dataForStan$R),
+    C = c(5, 1)[
+      1 + (levels(nCov_Merged$reporting_unit_fac) == "Hubei")
+    ],
+    K = rep(2, dataForStan$R),
+    eta = rep(0.0001, dataForStan$R),
+    inv_sqrt_phi = 5
+  ))[rep(1, chains)],
+  control = list(
+    adapt_delta = 0.95,
+    max_treedepth = 16
+  )
+)
+
+# saveRDS(nCov_fit_raw, tempfile(format(Sys.time(),format='%Y_%m_%d'),
+#   "/store/patrick/covid", ".rds"))
+nCov_fit <- rstan::extract(nCov_fit_raw)
+nCov_fit$data <- nCov_Merged
+nCov_fit$chains <- chains
+saveRDS(nCov_fit, stanResFile)
+# paste0('scp englishbreakfast.pbrown.ca:',   stanResFile, ' .')
+```
+
+
+```{r plotStup}
+nCov_fit <- readRDS(stanResFile)
+Sregion <- levels(nCov_fit$data$reporting_unit_fac)
+```
+
+```{r plotChains, fig.ncol = 4, fig.subcap=Sregion, fig.cap='A', out.width=Pmisc::out.width(0.24), fig.height=4, fig.width=5}
+par(mar = c(2, 2, 0, 0), bty = "l")
+aToPlot <- array(
+  nCov_fit[[knitr::opts_current$get()$fig.cap]],
+  c(
+    dim(nCov_fit$A)[1] / nCov_fit$chains, nCov_fit$chains,
+    length(Sregion)
+  )
+)
+for (D in 1:length(Sregion)) {
+  matplot(aToPlot[, , D], type = "l", lty = 1)
+}
+```
+
+```{r plotChainsC, ref.label = 'plotChains', fig.ncol = 4, fig.subcap=Sregion, fig.cap='C', out.width=Pmisc::out.width(0.24), fig.height=4, fig.width=5}
+```
+
+```{r plotChainsC, ref.label = 'plotChains', fig.ncol = 4, fig.subcap=Sregion, fig.cap='eta', out.width=Pmisc::out.width(0.24), fig.height=4, fig.width=5}
+```

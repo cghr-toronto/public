@@ -1,0 +1,686 @@
+```{r header, echo=FALSE}
+Pmisc::markdownHeader(
+  title = "Covid deaths",
+  css = "webpage.css"
+)
+```
+
+```{r setup, include = FALSE}
+# knitr::knit_hooks$set(
+#   marginsp = function(before, options, envir) {
+#     if (!before) {
+#       return()
+#     }
+#     # use small margins
+#     par(
+#       mar = c(
+#         1.5 + 0.9 * options$marginsp,
+#         1.5 + 0.9 * options$marginsp, 0.2, 0.2
+#       ),
+#       mgp = c(1.45, 0.45, 0), cex = 1
+#     )
+#   }
+# )
+
+
+if (any(commandArgs() == "mdToTex")) {
+  # if you'll be converting md to tex, can use the following
+  knitr::knit_hooks$set(plot = knitr::hook_plot_tex)
+  knitr::opts_chunk$set(dev = "pdf", fig.align = "center")
+  mdToTex <- TRUE
+} else {
+  knitr::knit_hooks$set(
+    plot = function(x, options) {
+      base <- knitr::opts_knit$get("base.url")
+      if (is.null(base)) {
+        base <- ""
+      }
+
+      fig.num <- options$fig.num
+      if (is.null(fig.num)) {
+        fig.num <- 1
+      }
+
+      cap <- options$fig.cap
+      scap <- options$fig.subcap
+      if (is.null(cap)) {
+        cap <- ""
+      }
+      if (is.null(scap)) {
+        scap <- rep(cap, fig.num)
+      }
+
+      if (length(options$out.width)) {
+        options$out.width <- rep_len(options$out.width, fig.num)
+      }
+
+      result <- sprintf("![%s](%s%s) ", scap, base, x)
+      if (any(options$fig.ncol == 0)) {
+        return(result)
+      }
+
+      if (length(scap)) {
+        fig.cur <- options$fig.cur
+        if (is.null(fig.cur)) {
+          fig.cur <- 1
+        }
+
+        fig.ncol <- options$fig.ncol
+        if (is.null(fig.ncol)) {
+          fig.ncol <- 1
+        }
+        Drow <- floor((fig.cur - 1) / fig.ncol) + 1
+        Dcol <- fig.cur - (Drow - 1) * fig.ncol
+
+        if (length(options$out.width)) {
+          result <- paste0(
+            gsub("[[:space:]]*$", "", result),
+            "{width=", options$out.width[fig.cur], "}"
+          )
+        }
+
+        if ((Dcol == fig.ncol) | (fig.cur == fig.num)) {
+          Dend <- fig.ncol * Drow
+          result <- paste(result, "\n\n", sep = "")
+        } else {
+          result <- paste(result, "\n", sep = "")
+        }
+
+        if (fig.cur == 1) {
+          result <- paste("\n\n## ", cap, "\n\n",
+            "<div id=\"", options$fig.lp, options$label,
+            "\">\n\n", result,
+            sep = ""
+          )
+        }
+        if (fig.cur == fig.num) {
+          result <- paste(result, cap, "\n</div>\n\n", sep = "")
+        }
+      }
+      result
+    }
+  )
+  knitr::opts_chunk$set(dev = "png")
+  mdToTex <- FALSE
+}
+
+knitr::opts_chunk$set(
+  echo = FALSE,
+  out.width = Pmisc::out.width(0.32),
+  fig.ncol = 3,
+  res = 200
+)
+```
+
+```{r load libraries, include=FALSE}
+### Load libraries
+# library('nCov2019')
+library("knitr")
+# library('rstan')
+# library("MASS")
+
+
+source("covid_expected_counts.R")
+source("covid_data.R")
+source("forecast.R")
+```
+
+```{r popData, include=FALSE, cache=TRUE}
+covid_expected <- get_covid_expected_counts()
+```
+
+
+```{r loaddatafromdb, include=FALSE, eval=TRUE}
+# use this instead?
+# https://data.europa.eu/euodp/en/data/dataset/covid-19-coronavirus-data/resource/260bbbde-2316-40eb-aec3-7cd7bfc2f590
+nCov_All <- get_covid_data_cva(covid_expected,
+  min_deaths = 60,
+  exclude = c("FR", "BE", "US")
+)
+# nCov_All <- nCov_All[nCov_All$reporting_unit != "Veteran Affair", ]
+
+# Redistribute Spain outlier
+nCov_All <- redistribute(
+  nCov_All,
+  country = "Spain", reporting_unit = "Spain",
+  start_date = "2020-03-09", outlier_date = "2020-06-19", outlier_actual = 3
+)
+
+# Redistribute India outliers, recalculate aggregate
+nCov_All <- redistribute(
+  nCov_All,
+  country = "India", reporting_unit = "Maharashtra",
+  start_date = "2020-03-18", outlier_date = "2020-06-16", outlier_actual = 132
+)
+
+nCov_All <- redistribute(
+  nCov_All,
+  country = "India", reporting_unit = "Delhi",
+  start_date = "2020-03-14", outlier_date = "2020-06-16", outlier_actual = 75
+)
+
+adjustedIndia <- nCov_All[c("time", "dead", "reporting_unit")][nCov_All$country == "India" & nCov_All$reporting_unit != "India", ]
+aggIndia <- aggregate(adjustedIndia$dead, by = list(Category = adjustedIndia$time), FUN = sum)
+nCov_All$dead[nCov_All$country == "India" & nCov_All$reporting_unit == "India"] <- aggIndia$x
+
+# # Mistake 0s in data
+# nCov_All[nCov_All$country == "Peru" & nCov_All$time == "2020-07-22", ]$dead <- 188
+# nCov_All[nCov_All$country == "Peru" & nCov_All$time == "2020-07-26", ]$dead <- 199
+#
+# # Big backlog was added on this day
+# nCov_All <- redistribute(
+#   nCov_All,
+#   country = "Peru", reporting_unit = "Peru", start_date = "2020-03-01", outlier_date = "2020-07-23", outlier_actual = 199
+# )
+
+# Need to shift deaths for Colombia after July 21st one day back, right now doing it manually
+nCov_All[nCov_All$country == "Colombia" & nCov_All$time == "2020-07-21", ]$dead <- 237
+nCov_All[nCov_All$country == "Colombia" & nCov_All$time == "2020-07-22", ]$dead <- 207
+nCov_All[nCov_All$country == "Colombia" & nCov_All$time == "2020-07-23", ]$dead <- 315
+nCov_All[nCov_All$country == "Colombia" & nCov_All$time == "2020-07-24", ]$dead <- 286
+nCov_All[nCov_All$country == "Colombia" & nCov_All$time == "2020-07-25", ]$dead <- 294
+nCov_All[nCov_All$country == "Colombia" & nCov_All$time == "2020-07-26", ]$dead <- 256
+nCov_All[nCov_All$country == "Colombia" & nCov_All$time == "2020-07-26", ]$dead <- 256
+nCov_All[nCov_All$country == "Colombia" & nCov_All$time == "2020-07-27", ]$dead <- 252
+```
+
+
+```{r usa, include=FALSE}
+# https://github.com/nytimes/covid-19-data
+
+library("data.table")
+
+# Process US state level data
+xUsaRaw <- read.csv(url(
+  "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv"
+), stringsAsFactors = FALSE)
+colnames(xUsaRaw) <- gsub("deaths", "cum_dead", colnames(xUsaRaw))
+xUsaRaw$date <- as.Date(xUsaRaw$date)
+xUsaRaw <- xUsaRaw[order(xUsaRaw$state, xUsaRaw$date), ]
+xUsaDt <- data.table(xUsaRaw)
+xUsaDt[, dead := c(0, diff(cum_dead)), by = "state"]
+xUsa <- as.data.frame(xUsaDt)
+
+
+# Aggregate US data and merge with US data from covid_expected
+xUsaAgg <- aggregate(
+  xUsa[, "dead", drop = FALSE],
+  xUsa[, "date", drop = FALSE], sum
+)
+xUsaAgg$country <- xUsaAgg$reporting_unit <- "United States"
+xUsaAgg <- merge(xUsaAgg, covid_expected$world,
+  all.x = TRUE, all.y = FALSE
+)
+
+
+xUsa <- xUsa[xUsa$state %in% c("District of Columbia", covid_expected$us$state), ]
+# a few negatives, change to zero
+xUsa$dead <- pmax(0, xUsa$dead)
+# may 5 in NY looks suspicous
+
+# Only consider states with >50 cumulative deaths in xUSA
+theSum <- sort(tapply(xUsa$dead, xUsa$state, sum))
+xUsa <- xUsa[xUsa$state %in% names(theSum)[theSum > 50], ]
+xUsa$state <- gsub("District of Columbia", "Washington, D.C.", xUsa$state)
+
+xUsa <- merge(xUsa, covid_expected$us, all.x = TRUE, all.y = FALSE)
+xUsa$reporting_unit <- xUsa$state
+xUsa$country <- "United States"
+xUsa$time <- xUsa$date
+xUsaAgg$time <- xUsaAgg$date
+
+# Redistribute outlier data
+
+# https://www.nytimes.com/interactive/2020/us/new-york-coronavirus-cases.html
+# "June 30: New York City released deaths from earlier periods but did not
+# specify when they were from."
+xUsa <- redistribute(
+  xUsa,
+  country = "United States", reporting_unit = "New York",
+  start_date = "2020-03-15", outlier_date = "2020-06-30", outlier_actual = 17
+)
+
+# https://www.nytimes.com/interactive/2020/us/new-jersey-coronavirus-cases.html
+# "June 25: The state began reporting probable deaths."
+xUsa <- redistribute(
+  xUsa,
+  country = "United States", reporting_unit = "New Jersey",
+  start_date = "2020-03-04", outlier_date = "2020-06-25", outlier_actual = 33
+)
+
+# https://news.delaware.gov/2020/06/23/public-health-announces-27-additional-positive-cases-of-covid-19-in-delaware/
+# "DPH epidemiologists have identified 67 additional COVID-19 deaths dating back
+# to April 2020 that were not previously reported to DPH"
+
+# https://dhss.delaware.gov/dhss/pressreleases/2020/covidupdate072420.html
+# "DPH epidemiologists have identified 49 additional COVID-19 deaths that
+# occurred between early May and late June, but were not previously reported to
+# DPH"
+
+# Used https://myhealthycommunity.dhss.delaware.gov/locations/state for data
+xUsa <- redistribute(
+  xUsa,
+  country = "United States", reporting_unit = "Delaware",
+  start_date = "2020-04-01", outlier_date = "2020-06-23", outlier_actual = 2
+)
+
+xUsa <- redistribute(
+  xUsa,
+  country = "United States", reporting_unit = "Delaware",
+  start_date = "2020-05-01", outlier_date = "2020-07-24", outlier_actual = 1
+)
+
+# https://www.nytimes.com/interactive/2020/us/michigan-coronavirus-cases.html
+# "New case numbers spiked on June 5 with the addition of probable cases and
+# deaths reported by the state."
+xUsa <- redistribute(
+  xUsa,
+  country = "United States", reporting_unit = "Michigan",
+  start_date = "2020-03-10", outlier_date = "2020-06-05", outlier_actual = 20
+)
+
+# https://www.nytimes.com/interactive/2020/us/south-carolina-coronavirus-cases.html#anomaly-notes
+# "July 16: South Carolina released many deaths from earlier in June and July."
+# Used 10 day
+xUsa <- redistribute(
+  xUsa,
+  country = "United States", reporting_unit = "South Carolina",
+  start_date = "2020-06-01", outlier_date = "2020-07-16", outlier_actual = 22
+)
+
+# https://www.nytimes.com/interactive/2020/us/colorado-coronavirus-cases.html
+# "April 24: Data released included cases from a testing backlog."
+# Used 10 day
+xUsa <- redistribute(
+  xUsa,
+  country = "United States", reporting_unit = "Colorado",
+  start_date = "2020-03-05", outlier_date = "2020-04-24", outlier_actual = 24
+)
+
+
+# https://www.nytimes.com/interactive/2020/us/maryland-coronavirus-cases.html
+# "April 15: The state began reporting probable deaths."
+# Used coronavirus.app
+xUsa <- redistribute(
+  xUsa,
+  country = "United States", reporting_unit = "Maryland",
+  start_date = "2020-03-05", outlier_date = "2020-04-15", outlier_actual = 32
+)
+```
+
+
+```{r france, include=FALSE}
+xFrance <- read.table(url("https://raw.githubusercontent.com/opencovid19-fr/data/master/dist/chiffres-cles.csv"),
+  sep = ",", header = TRUE, stringsAsFactors = FALSE, quote = "\"", fill = TRUE
+)
+xFrance$time <- as.Date(xFrance$date)
+
+# Only rows containing whole country data from health ministry
+xFrance <- xFrance[xFrance$granularite == "pays" & grepl("ministere", xFrance$source_type), ]
+xFrance <- xFrance[, c("time", "deces", "deces_ehpad")]
+xFrance$countryCode <- "FR"
+xFrance$reporting_unit <- "France"
+
+# Replace NAs in data with latest non-NA value (as these columns are cumulative)
+xFrance[1, "deces_ehpad"] <- 0
+xFrance$deces <- fillForward(xFrance$deces)
+xFrance$deces_ehpad <- fillForward(xFrance$deces_ehpad)
+
+xFrance$dead_ehpad_raw <- c(NA, diff(xFrance$deces_ehpad))
+
+# Compute daily and cumulative deaths from hospitalized/non-hospitalized deaths
+totalNonHosp <- max(xFrance$deces_ehpad, na.rm = TRUE)
+xFrance$dead_hosp <- diff(c(0, xFrance$deces))
+xFrance$dead_non_hosp <- round(totalNonHosp * xFrance$dead_hosp / sum(xFrance$dead_hosp))
+xFrance$dead <- xFrance$dead_hosp + xFrance$dead_non_hosp
+xFrance$cum_dead <- cumsum(xFrance$dead)
+
+xFrance[is.na(xFrance$dead_ehpad_raw), "dead_ehpad_raw"] <- 0
+
+
+matplot(xFrance$time, xFrance[, c("dead_hosp", "dead_ehpad_raw")],
+  pch = c(16, 2), xlab = "time", ylab = "cases/day", xaxt = "n",
+  xlim = c(as.Date("2020/3/1"), max(xFrance$time))
+)
+forAxis <- sort(c(
+  seq(as.Date("2020/1/1"), as.Date("2020/06/01"), by = "month"),
+  seq(as.Date("2020/1/15"), as.Date("2020/06/015"), by = "month")
+))
+axis(1, as.numeric(forAxis), format(forAxis, "%e %b"))
+legend("topleft",
+  bty = "n", pch = c(16, 2), col = 1:2,
+  legend = c("hospitals", "care homes")
+)
+
+# Expected counts in France
+expFrance <- covid_expected$world[which(covid_expected$world == "France")[1], ]
+
+xFrance <- cbind(xFrance, expFrance[
+  rep(1, nrow(xFrance)),
+  setdiff(colnames(expFrance), colnames(xFrance))
+])
+```
+
+```{r belgium}
+# Raw data on a per day basis, split between age and gender
+belgiumRaw <- read.csv(url("https://epistat.sciensano.be/Data/COVID19BE_MORT.csv"),
+  stringsAsFactors = FALSE
+)
+belgiumAgg <- aggregate(belgiumRaw[, "DEATHS"], belgiumRaw[, "DATE", drop = FALSE], sum)
+colnames(belgiumAgg)[2] <- "dead"
+belgiumAgg$time <- as.Date(belgiumAgg$DATE)
+belgiumAgg$countryCode <- "BE"
+belgiumAgg$reporting_unit <- belgiumAgg$country <- "Belgium"
+belgiumAgg$cum_dead <- cumsum(belgiumAgg$dead)
+belgiumAgg[, c("pop", "Expected", "mMult")] <-
+  covid_expected$world[
+    min(which(covid_expected$world$country == "Belgium")),
+    c("pop", "Expected", "mMult")
+  ]
+# get rid of previous 2 days data, which always look artifically low
+belgiumAgg <- belgiumAgg[seq(1, nrow(belgiumAgg) - 2), ]
+```
+
+```{r spain}
+spainFile <- tempfile(fileext = ".xlsx")
+download.file(
+  "https://www.mscbs.gob.es/profesionales/saludPublica/ccayes/alertasActual/nCov-China/documentos/Fallecidos_COVID19.xlsx",
+  spainFile
+)
+
+covidSpain <- openxlsx::read.xlsx(spainFile)
+covidSpain <- covidSpain[-nrow(covidSpain), c(1, ncol(covidSpain))]
+colnames(covidSpain) <- c("timeFunny", "dead")
+
+firstDateSpain <- as.Date("2020/02/13")
+timeSpainFunny <- as.numeric(as.character(covidSpain[, 1]))
+covidSpain$time <- timeSpainFunny - min(timeSpainFunny) + firstDateSpain
+
+# last time point is often dodgy
+covidSpain <- covidSpain[covidSpain$time < max(covidSpain$time), ]
+
+toMergeSpain <- covid_expected$world[
+  min(which(covid_expected$world$country == "Spain")),
+]
+toMergeSpain$countryCode <- "ES"
+toMergeSpain$reporting_unit <- "Spain"
+
+
+spainAgg <- cbind(
+  toMergeSpain[
+    rep(1, nrow(covidSpain)),
+    setdiff(colnames(toMergeSpain), colnames(covidSpain))
+  ],
+  covidSpain
+)
+```
+
+```{r Iran}
+# Using updated data from https://www.bbc.com/news/world-middle-east-53598965
+xIran <- read.csv("../doc/bbc_iran.csv")
+xIran$time <- as.Date(xIran$date)
+xIran <- xIran[, c("time", "dead")]
+xIran$cum_dead <- cumsum(xIran$dead)
+xIran$countryCode <- "IR"
+xIran$country <- xIran$reporting_unit <- "Iran"
+xIran[, c("pop", "Expected", "mMult")] <-
+  covid_expected$world[
+    min(which(covid_expected$world$country == "Iran")),
+    c("pop", "Expected", "mMult")
+  ]
+
+
+# For data past end of BBC data, scale coronavirus.app data using counts from
+# July 1 - 20
+nCovIran <- nCov_All[nCov_All$reporting_unit == "Iran" &
+  nCov_All$time >= as.Date("2020-07-01") &
+  nCov_All$time <= as.Date("2020-07-20"), ]
+
+iranRatio <- sum(xIran$dead[xIran$time >= as.Date("2020-07-01")]) / sum(nCovIran$dead)
+
+nCovIranAfter <- nCov_All[nCov_All$reporting_unit == "Iran" &
+  nCov_All$time > as.Date("2020-07-20"), ]
+nCovIranAfter$dead <- round(nCovIranAfter$dead * iranRatio)
+
+xIran <- rbind(xIran, nCovIranAfter)
+```
+
+```{r Peru}
+
+xx <- scan(url("https://www.datosabiertos.gob.pe/dataset/fallecidos-por-covid-19-ministerio-de-salud-minsa"), what = "a")
+link <- grep("cloud", xx, value = TRUE)
+link <- regmatches(link, regexpr("htt+.*download", link))
+
+
+
+# https://www.datosabiertos.gob.pe/dataset/fallecidos-por-covid-19-ministerio-de-salud-minsa
+# "https://cloud.minsa.gob.pe/s/Md37cjXmjT9qYSa/download"
+peru <- read.csv(url(link), header = TRUE, stringsAsFactors = FALSE)
+peru$date <- as.Date(gsub(
+  "^([[:digit:]]{4})([[:digit:]]{2})", "\\1/\\2/",
+  peru$FECHA_FALLECIMIENTO
+))
+Sdate <- seq(min(peru$date), max(peru$date), by = "1 day")
+peru2 <- data.frame(
+  reporting_unit = "Peru", time = Sdate,
+  dead = as.vector(table(peru$date)[as.character(Sdate)])
+)
+peru2[is.na(peru2$dead), "dead"] <- 0
+# exclude 15 to 26 may inclusive
+peru2[peru2$time >= as.Date("2020/05/16") &
+  peru2$time <= as.Date("2020/05/26"), "dead"] <- NA
+peru2[
+  peru2$time %in% as.Date(c("2020/06/07", "2020/08/03")),
+  "dead"
+] <- NA
+peru2$Expected <- nCov_Merged[
+  which(nCov_Merged$reporting_unit == "Peru")[1], "Expected"
+]
+
+peru2$cum_dead <- cumsum(peru2$dead)
+peru2$countrycode <- "PE"
+peru2$country <- "Peru"
+peru2[, c("pop", "Expected", "mMult")] <-
+  covid_expected$world[
+    min(which(covid_expected$world$country == "Peru")),
+    c("pop", "Expected", "mMult")
+  ]
+
+nCov_Merged[nCov_Merged$reporting_unit == "Colombia" &
+  nCov_Merged$time == as.Date("2020/07/21"), "dead"] <- NA
+```
+
+```{r Canada}
+# Process Canada data
+xCanada <- read.csv(url("https://health-infobase.canada.ca/src/data/covidLive/covid19.csv"), stringsAsFactors = FALSE)
+xCanada <- xCanada[xCanada$prname %in% c("Canada", "Ontario", "Quebec", "Alberta", "Nova Scotia"), ]
+xCanada$time <- as.Date(xCanada$date, "%d-%m-%y")
+xCanada <- xCanada[c("prname", "time", "numdeathstoday", "numdeaths")]
+colnames(xCanada) <- c("reporting_unit", "time", "dead", "cum_dead")
+xCanada <- xCanada[order(xCanada$reporting_unit, xCanada$time), ]
+xCanada$country <- "Canada"
+xCanada$countryCode <- "CA"
+
+provinceExpected <- read.csv("../doc/canada_expected.csv")
+provinceExpected$reporting_unit <- provinceExpected$GEO
+xCanada2 <- merge(xCanada, provinceExpected[, c("reporting_unit", "pop", "Expected", "mMult")], by = "reporting_unit", all.x = TRUE)
+
+xCanada2$dead[xCanada2$reporting_unit == "Quebec" & xCanada2$time == as.Date("2020-05-31")] <- 111
+xCanada2$dead[xCanada2$reporting_unit == "Quebec" & xCanada2$time == as.Date("2020-06-01")] <- 111
+```
+
+```{r Hubei, include=FALSE}
+# fill in early days
+# https://en.wikipedia.org/wiki/Timeline_of_the_2019%E2%80%9320_coronavirus_pandemic_from_November_2019_to_January_2020
+# https://github.com/CSSEGISandData/COVID-19/tree/master/archived_data/archived_daily_case_updates
+xHubeiEarly <- as.data.frame(matrix(scan(text = "2020-01-09 1
+2020-01-10 1
+2020-01-11 1
+2020-01-12 1
+2020-01-13 1
+2020-01-14 1
+2020-01-15 2
+2020-01-16 2
+2020-01-17 2
+2020-01-18 2
+2020-01-19 3
+2020-01-20 3
+2020-01-21 6
+2020-01-22 17
+2020-01-23 17
+2020-01-24 24
+2020-01-25 40
+2020-01-26 52", what = "a", quiet = TRUE),
+  ncol = 2, byrow = TRUE,
+  dimnames = list(NULL, c("time", "cum_dead"))
+), stringsAsFactors = FALSE)
+xHubeiEarly$time <- as.Date(xHubeiEarly$time)
+xHubeiEarly$cum_dead <- as.integer(xHubeiEarly$cum_dead)
+xHubeiEarly$countryCode <- "CN"
+xHubeiEarly$reporting_unit <- "Hubei"
+xHubeiEarly$country <- "China"
+xHubeiEarly$dead <- diff(c(0, xHubeiEarly$cum_dead))
+
+firstHubei <- which(nCov_All$reporting_unit == "Hubei" &
+  nCov_All$time == as.Date("2020/01/27"))
+
+xHubeiEarly <- cbind(
+  xHubeiEarly,
+  nCov_All[
+    rep(firstHubei, nrow(xHubeiEarly)),
+    setdiff(colnames(nCov_All), colnames(xHubeiEarly))
+  ]
+)
+
+
+# Adding in Hubei data to nCov_All
+nCov_All[firstHubei, "dead"] <- nCov_All[firstHubei, "cum_dead"] -
+  max(xHubeiEarly$cum_dead)
+nCov_All <- rbind(
+  xHubeiEarly[, colnames(nCov_All)],
+  nCov_All
+)
+nCov_All <- nCov_All[order(nCov_All$reporting_unit, nCov_All$time), ]
+
+reassignDate <- which(nCov_All$reporting_unit == "Hubei" &
+  nCov_All$time == as.Date("2020/04/17"))
+# impute mean
+toReassign <- nCov_All[reassignDate, "dead"] - 1
+
+nCov_All[reassignDate, "dead"] <- nCov_All[reassignDate, "dead"] - toReassign
+reassignRange <- which(
+  nCov_All$time <= as.Date("2020/04/17") &
+    nCov_All$reporting_unit == "Hubei"
+)
+theResample <- round(toReassign * nCov_All[reassignRange, "dead"] / sum(nCov_All[reassignRange, "dead"]))
+nCov_All[reassignRange, "dead"] <- nCov_All[reassignRange, "dead"] + theResample
+
+nCov_All[nCov_All$reporting_unit == "Hubei", ][, 2:6]
+```
+
+```{r getRidOfRecent, include=FALSE}
+# latest days's coronavirus.app data sometimes has low counts
+getRid <- which(nCov_All$time >= (
+  as.Date(gsub(" .*", "", Sys.time())) - 1))
+if (length(getRid)) {
+  nCov_All <- nCov_All[-getRid, ]
+}
+
+nCov_All <- nCov_All[!is.na(nCov_All$Expected), ]
+```
+
+
+
+
+```{r nCovAllRecreate}
+# Adding in the better values for France and Belgium, adding in aggregated and
+# state level US data, removing non-Hubei China data
+toBind <- c("country", "reporting_unit", "time", "dead", "Expected", "mMult")
+
+nCov_Merged <- rbind(
+  nCov_All[!(nCov_All$reporting_unit %in%
+    c("Belgium", "France", "China", "Iran", "Peru", "Canada", "Spain")), toBind],
+  xFrance[, toBind],
+  belgiumAgg[, toBind],
+  spainAgg[, toBind],
+  xUsa[, toBind],
+  xUsaAgg[, toBind],
+  xIran[, toBind],
+  peru2[, toBind],
+  xCanada2[, toBind]
+)
+
+nCov_Merged <- nCov_Merged[order(nCov_Merged$reporting_unit, nCov_Merged$time), ]
+```
+
+
+```{r showData2, echo=FALSE, include=FALSE}
+## Some of past week's data for France, NY, USA
+nCov_Merged[
+  nCov_Merged$time >= (max(nCov_Merged$time) - 10) &
+    nCov_Merged$reporting_unit %in% c("New York", "Spain"),
+  c("country", "reporting_unit", "time", "Expected", "dead")
+]
+
+```
+
+```{r usStates}
+# zerocounts on saturday from 18 July
+# Day of week column
+nCov_Merged$dow <- format(nCov_Merged$time, "%a")
+
+# find counts when saturday is zero
+toReassign <- which(nCov_Merged$reporting_unit == "Louisiana" &
+  nCov_Merged$time > as.Date("2020/07/15") &
+  nCov_Merged$dow == "Sat" & nCov_Merged$dead == 0)
+
+for (D in toReassign) {
+  dateHere <- nCov_Merged[D, "time"]
+  reassignLow <- which(nCov_Merged$reporting_unit == "Louisiana" &
+    nCov_Merged$time == (dateHere - 1))
+  reassignHigh <- which(nCov_Merged$reporting_unit == "Louisiana" &
+    nCov_Merged$time == (dateHere + 1))
+  removeFromLow <- round(nCov_Merged[reassignLow, "dead"] / 3)
+  removeFromHigh <- round(nCov_Merged[reassignHigh, "dead"] / 3)
+  nCov_Merged[D, "dead"] <- nCov_Merged[D, "dead"] + removeFromLow + removeFromHigh
+
+  nCov_Merged[reassignHigh, "dead"] <-
+    nCov_Merged[reassignHigh, "dead"] - removeFromHigh
+
+  nCov_Merged[reassignLow, "dead"] <-
+    nCov_Merged[reassignLow, "dead"] - removeFromLow
+}
+
+toReallocate <- which(nCov_Merged$reporting_unit == "Texas" &
+  nCov_Merged$time == as.Date("2020/07/27"))
+eitherSide <- which(nCov_Merged$reporting_unit == "Texas" &
+  abs(difftime(nCov_Merged$time, as.Date("2020/07/27"), units = "days")) == 1)
+toImpute <- round(mean(nCov_Merged[eitherSide, "dead"]))
+
+extraCases <- nCov_Merged[toReallocate, "dead"] - toImpute
+nCov_Merged[toReallocate, "dead"] <- toImpute
+datesToAdd <- which(nCov_Merged$reporting_unit == "Texas" &
+  nCov_Merged$time < as.Date("2020/07/27") &
+  nCov_Merged$dead > 0)
+toAdd <- round(extraCases * nCov_Merged[datesToAdd, "dead"] /
+  sum(nCov_Merged[datesToAdd, "dead"]))
+nCov_Merged[datesToAdd, "dead"] <- nCov_Merged[datesToAdd, "dead"] + toAdd
+
+```
+
+
+```{r Export data}
+storeDir <- file.path("/store", "patrick", "covid")
+if (!dir.exists(storeDir)) storeDir <- "."
+
+
+today <- format(Sys.time(), format = "%Y_%m_%d")
+# today = '2020_05_05'
+
+dataFile <- file.path(
+  storeDir,
+  paste0("covidData", today, ".rds")
+)
+
+saveRDS(nCov_Merged, dataFile)
+```

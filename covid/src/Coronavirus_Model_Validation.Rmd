@@ -1,0 +1,293 @@
+```{r header, echo=FALSE}
+Pmisc::markdownHeader(title = "Covid deaths, validation", 
+                      css = system.file("src/webpage.css",
+                                        package='Pmisc'))
+```
+
+
+
+```{r setup, include = FALSE}
+knitr::knit_hooks$set(
+  marginsp = function(before, options, envir) {  
+    if( !before ) return()
+    # use small margins       
+    par(mar = c( 1.5 + 0.9 *options$marginsp,
+                 1.5 + 0.9 * options$marginsp,0.2,0.2 ),
+        mgp = c( 1.45, 0.45, 0), cex = 1 )
+  }   
+)
+
+knitr::opts_chunk$set(
+  fig.height = 4, fig.width = 4, marginsp = TRUE,
+  out.width = Pmisc::out.width(0.9))
+
+if ( any(commandArgs() == 'mdToTex') ) {
+  # if you'll be converting md to tex, can use the following
+  knitr::knit_hooks$set( plot = knitr::hook_plot_tex )  
+  knitr::opts_chunk$set( dev ='pdf', fig.align ='center')
+  mdToTex = TRUE
+} else {
+  knitr::knit_hooks$set(
+    plot=function (x, options) {
+    
+
+      base = knitr::opts_knit$get("base.url")
+      if ( is.null(base) ) { base = "" }
+      
+      fig.num = options$fig.num
+      if ( is.null(fig.num) ) { fig.num = 1 }
+      
+      cap = options$fig.cap
+      scap = options$fig.subcap
+      if ( is.null(cap) ) { cap = "" }
+      if ( is.null(scap) ) { scap = rep(cap, fig.num) }
+  
+      if ( length(options$out.width) ) {
+        options$out.width = rep_len(options$out.width, fig.num)
+      }
+      
+      result = sprintf("![%s](%s%s) ", scap, base, x)
+      if ( any(options$fig.ncol == 0) ) { return( result ) }
+      
+      if ( length(scap) ) {
+        
+        fig.cur = options$fig.cur
+        if ( is.null(fig.cur) ) { fig.cur = 1 }
+        
+        fig.ncol = options$fig.ncol
+        if ( is.null(fig.ncol) ) { fig.ncol = 1 }
+        Drow = floor( (fig.cur - 1) / fig.ncol ) + 1
+        Dcol = fig.cur - (Drow - 1) * fig.ncol
+        
+        if ( length(options$out.width) ) {
+          result = paste0( gsub("[[:space:]]*$", "", result ), 
+                           "{width=", options$out.width[fig.cur], "}" )
+        }
+        
+        if ( (Dcol == fig.ncol) | (fig.cur == fig.num) ) {
+          Dend = fig.ncol * Drow
+          result = paste(result, "\n\n", sep = "")
+        } else {
+            result = paste(result, "\n", sep = "")
+        }
+        
+        if ( fig.cur == 1 ) {
+          result = paste( "\n\n## ", cap, "\n\n",
+                          "<div id=\"", options$fig.lp, options$label, 
+                          "\">\n\n", result, sep = "" )
+        }
+        if ( fig.cur == fig.num ) {
+          result = paste(result, cap, "\n</div>\n\n", sep = "")
+        }
+      }
+      result
+    }
+  )
+  knitr::opts_chunk$set( dev='png' )
+  mdToTex = FALSE
+}
+
+knitr::opts_chunk$set(echo = FALSE, 
+                      out.width = Pmisc::out.width(0.32),
+                      fig.ncol = 3, 
+                      res = 200)
+
+### Load libraries 
+
+library('knitr')
+source("covid_expected_counts.R")
+source("covid_data.R")
+source("forecast.R")
+```
+
+
+
+```{r foramatData}
+storeDir = file.path('/store','patrick','covid')
+if(!dir.exists(storeDir)) storeDir = '.'
+
+today = format(Sys.time(),format='%Y_%m_%d')
+today = '2020_05_25'
+
+stanResFile = max(list.files(storeDir, pattern=
+  paste0('covidRes',,'.rds')))
+
+stanRes = readRDS(file.path(storeDir, stanResFile))
+nCov_Full = stanRes$data
+
+Svalidate = as.Date(c('2020/03/25','2020/04/01','2020/04/08',
+  '2020/04/13','2020/04/17','2020/04/22','2020/04/29',
+  '2020/05/04','2020/05/12','2020/05/21'))
+```
+```{r stanData}
+
+
+getStanData = function(threshold) {
+nCov_All = nCov_Full[nCov_Full$time <= threshold,]
+nCov_Val = nCov_Full[nCov_Full$time > max(nCov_All$time), ]
+
+nCov_All$timeNumeric = as.numeric(nCov_All$time)
+nCov_All$reporting_unit_fac = factor(nCov_All$reporting_unit)
+nCov_All$reporting_unit_int = as.integer(nCov_All$reporting_unit_fac)
+nCov_All$logExpected = log(nCov_All$Expected)
+
+
+dataForStan <- list(
+  N = nrow(nCov_All),
+  R = nlevels(nCov_All$reporting_unit_fac),
+  time_index = nCov_All$timeNumeric,
+  region_index = nCov_All$reporting_unit_int,
+  logExpected = nCov_All$logExpected,
+  y_obs = nCov_All$dead
+)
+
+stanValResFile = file.path(storeDir,
+  paste0('covidResValidationV2',
+    format(threshold, '%m%d'), '_',
+    today,'.rds'))
+return(list(stan = dataForStan, validation = nCov_Val, file=stanValResFile,
+  levels = levels(nCov_All$reporting_unit_fac), data = nCov_All))
+}
+forVal = mapply(getStanData, threshold = Svalidate, SIMPLIFY=FALSE)
+
+```
+
+
+```{r StanSetup, include=FALSE}
+
+ thin <- 10
+iter <- 400 * thin
+chains <- 8
+
+  control = list( adapt_delta = 0.95,
+                                       max_treedepth = 16 ) 
+
+
+nCov_code <- rstan::stanc(file = "Coronavirus_Model.stan") # convert to C++ code
+nCov_model <- rstan::stan_model(stanc_ret = nCov_code)     # compile generated code
+```
+
+```{r stanFit}
+
+for(Dthreshold in 1:length(Svalidate)) {
+
+
+nCov_All = forVal[[Dthreshold]]$data
+
+startDate = unlist(as.list(by(
+  nCov_All, nCov_All$reporting_unit_int, 
+  function(xx) xx[which.max(xx$dead),'timeNumeric' ] )))
+
+
+
+dataForStan = forVal[[Dthreshold]]$stan
+
+init =  list(list(
+    A = startDate,
+    B = rep(30, dataForStan$R),
+    C = c(5, 1)[
+      1 + (levels(nCov_All$reporting_unit_fac) == "Hubei")
+    ],
+    K = rep(2, dataForStan$R),
+    eta = rep(0.0001, dataForStan$R),
+    inv_sqrt_phi = 5
+  ))[rep(1, chains)]
+
+if(!file.exists(forVal[[Dthreshold]]$file)) {
+nCov_fit_raw <- rstan::sampling(nCov_model, 
+  data = dataForStan, iter = iter,
+  chains = chains, cores=chains, thin = thin, 
+  init=init, control=control)
+
+nCov_fit = rstan::extract(nCov_fit_raw)
+nCov_fit$region = forVal[[Dthreshold]]$levels
+nCov_fit$data = forVal[[Dthreshold]]$data
+#nCov_fit$validate = forVal[[Dthreshold]]$validation
+saveRDS(nCov_fit, forVal[[Dthreshold]]$file)
+
+}
+
+}
+```
+
+```{r ForecastingYsetup, eval=TRUE}
+forX = seq(as.Date("2020/1/15"), as.Date("2020/10/1"), by = '1 month')
+xlim = as.Date(c('2019/12/20','2020/7/15'))
+Scol = mapmisc::col2html(RColorBrewer::brewer.pal(8, 'Set2'), 0.2)
+toForecast = 'lambda'
+region_names <- c("Italy", 'France', "United States",
+                  "Spain", "Iran", "Netherlands",
+                  'United Kingdom', "Germany",
+                  'Netherlands','Belgium',
+                  'Hubei','Iran',
+                  "Canada",'Switzerland',
+                  'Sweden', "Russia","Brazil")
+
+state_names = c( "New York", "Washington", "California",'Louisiana',
+  #'Michigan',
+  'New Jersey')
+
+forYcount = 10^seq(1,7)
+forYcount = sort(unique(c(forYcount, forYcount/2, forYcount/5)))
+
+forYtext = format(forYcount, scientific=FALSE)
+forYtext = gsub("000000$", "M", forYtext)
+forYtext = gsub("000$", "K", forYtext)
+forYtext = gsub("[[:space:]]", "", forYtext)
+```
+
+
+
+```{r stanResLoad}
+
+theDir = paste0('validateV2',
+  '_',today)
+dir.create(theDir, showWarnings=FALSE)
+toSaveList = list()
+
+for(D in 1:length(forVal)) {
+nCov_fit = readRDS(forVal[[D]]$file)
+nCov_fit$data = forVal[[D]]$data
+ranefNames = c('A','B','C','K', 'eta')
+theSamples  = do.call(abind::abind, c(nCov_fit[ranefNames], list(along=3)))
+dimnames(theSamples) = list(sim = 1:(dim(theSamples)[1]), 
+  region = levels(nCov_fit$data$reporting_unit_fac), 
+  ranef= ranefNames)
+
+phi_samples <- nCov_fit$phi
+
+theForecasts1 = covid_forecast(
+  theSamples, 
+  nCov_fit,
+  regionNamesAll = intersect(
+    c(region_names, state_names),
+    dimnames(theSamples)$region),
+  mc.cores = floor(parallel::detectCores()/3),
+  usAgg=FALSE
+  )
+#,
+#  regionNamesAll = c(
+#    region_names,    
+#    state_names
+#    ) )
+Stime = theForecasts1$time
+StimeInt = as.numeric(Stime)
+theForecasts = theForecasts1$forecast
+
+
+toSaveList[[D]] = forecast_summaries(theForecasts, Stime, nCov_data=nCov_fit$data,
+  threshold=NULL)
+
+theDirInner = file.path(theDir, 
+      format(Svalidate[D], '%m%d'))
+dir.create(theDirInner, showWarnings=FALSE)
+
+for (Dsave in setdiff(names(toSaveList[[D]]), 'samples') ) {
+  write.csv(toSaveList[[D]][[Dsave]], 
+    file=file.path(theDirInner, paste0(Dsave, '.csv')),
+    row.names=FALSE)
+}
+}
+
+```
+
