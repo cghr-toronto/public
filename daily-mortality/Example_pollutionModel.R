@@ -5,7 +5,7 @@ library(here)
 
 ######################################### load data #####################################
 # Please define your output directory, output_dir
-output_dir <- "/store/guowen/project_CGHR/Paper/JASA/gitHubCode"
+output_dir <- "/store/guowen/project_CGHR/Paper/STAN/gitHubCode"
 
 load(file.path(output_dir, "data_all_toronto.RData"))
 
@@ -387,7 +387,7 @@ initf <- function() list(
 # add time trend needed data
 current_data$trend_reference_day <- 2923 # which uses the Jan 1st, 2004 as the reference day. 
 
-fit.code <- stanc(file.path(output_dir, "JASA_pollution_model.stan")) # convert to C++ code
+fit.code <- stanc(file.path(output_dir, "STAN_pollution_model.stan")) # convert to C++ code
 fit.model <- stan_model(stanc_ret = fit.code) # compile C++ code
 rstan_options(auto_write = TRUE)
 
