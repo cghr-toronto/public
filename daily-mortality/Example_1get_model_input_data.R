@@ -2,7 +2,7 @@ library(rstan)
 library(robustbase)
 library(data.table)
 library(here)
-setwd(here("Model","Toronto1996_2012","fit model"))
+
 
 load("data_all_toronto.RData")
 
