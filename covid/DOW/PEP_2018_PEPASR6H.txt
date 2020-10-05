@@ -1,0 +1,22 @@
+PEPASR6H
+Annual Estimates of the Resident Population by Sex, Age, Race, and Hispanic Origin for the United States and States: April 1, 2010 to July 1, 2018
+
+Note: The estimates are based on the 2010 Census and reflect changes
+to the April 1, 2010 population due to the Count Question Resolution
+program and geographic program revisions. Median age is calculated
+based on single year of age. Hispanic origin is considered an
+ethnicity, not a race.  Hispanics may be of any race. Responses of
+"Some Other Race" from the 2010 Census are modified. This results in
+differences between the population for specific race categories shown
+for the 2010 Census population in this table versus those in the
+original 2010 Census data. For more information, see 
+https://www2.census.gov/programs-surveys/popest/technical-documentation/methodology/modified-race-summary-file-method/mrsf2010.pdf. For population estimates methodology statements, see 
+http://www.census.gov/programs-surveys/popest/technical-documentation/methodology.html.
+
+
+Suggested Citation: 
+Annual Estimates of the Resident Population by Sex, Age, Race, and Hispanic Origin for the United States and States: April 1, 2010 to July 1, 2018 
+Source: U.S. Census Bureau, Population Division 
+Release Date: June 2019
+
+

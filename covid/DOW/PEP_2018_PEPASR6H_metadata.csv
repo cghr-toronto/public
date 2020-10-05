@@ -1,0 +1,700 @@
+year.id,Id
+year.display-label,Year
+hisp.id,Id
+hisp.display-label,Hispanic Origin
+GEO.id,Id
+GEO.id2,Id2
+GEO.display-label,Geography
+totpop_sex0_age999,Total; Both Sexes; Total
+wa_sex0_age999,Race Alone - White; Both Sexes; Total
+ba_sex0_age999,Race Alone - Black or African American; Both Sexes; Total
+ia_sex0_age999,Race Alone - American Indian and Alaska Native; Both Sexes; Total
+aa_sex0_age999,Race Alone - Asian; Both Sexes; Total
+na_sex0_age999,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; Total
+tom_sex0_age999,Two or More Races; Both Sexes; Total
+totpop_sex0_age0to4,Total; Both Sexes; Under 5 years
+wa_sex0_age0to4,Race Alone - White; Both Sexes; Under 5 years
+ba_sex0_age0to4,Race Alone - Black or African American; Both Sexes; Under 5 years
+ia_sex0_age0to4,Race Alone - American Indian and Alaska Native; Both Sexes; Under 5 years
+aa_sex0_age0to4,Race Alone - Asian; Both Sexes; Under 5 years
+na_sex0_age0to4,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; Under 5 years
+tom_sex0_age0to4,Two or More Races; Both Sexes; Under 5 years
+totpop_sex0_age5to9,Total; Both Sexes; 5 to 9 years
+wa_sex0_age5to9,Race Alone - White; Both Sexes; 5 to 9 years
+ba_sex0_age5to9,Race Alone - Black or African American; Both Sexes; 5 to 9 years
+ia_sex0_age5to9,Race Alone - American Indian and Alaska Native; Both Sexes; 5 to 9 years
+aa_sex0_age5to9,Race Alone - Asian; Both Sexes; 5 to 9 years
+na_sex0_age5to9,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 5 to 9 years
+tom_sex0_age5to9,Two or More Races; Both Sexes; 5 to 9 years
+totpop_sex0_age10to14,Total; Both Sexes; 10 to 14 years
+wa_sex0_age10to14,Race Alone - White; Both Sexes; 10 to 14 years
+ba_sex0_age10to14,Race Alone - Black or African American; Both Sexes; 10 to 14 years
+ia_sex0_age10to14,Race Alone - American Indian and Alaska Native; Both Sexes; 10 to 14 years
+aa_sex0_age10to14,Race Alone - Asian; Both Sexes; 10 to 14 years
+na_sex0_age10to14,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 10 to 14 years
+tom_sex0_age10to14,Two or More Races; Both Sexes; 10 to 14 years
+totpop_sex0_age15to19,Total; Both Sexes; 15 to 19 years
+wa_sex0_age15to19,Race Alone - White; Both Sexes; 15 to 19 years
+ba_sex0_age15to19,Race Alone - Black or African American; Both Sexes; 15 to 19 years
+ia_sex0_age15to19,Race Alone - American Indian and Alaska Native; Both Sexes; 15 to 19 years
+aa_sex0_age15to19,Race Alone - Asian; Both Sexes; 15 to 19 years
+na_sex0_age15to19,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 15 to 19 years
+tom_sex0_age15to19,Two or More Races; Both Sexes; 15 to 19 years
+totpop_sex0_age20to24,Total; Both Sexes; 20 to 24 years
+wa_sex0_age20to24,Race Alone - White; Both Sexes; 20 to 24 years
+ba_sex0_age20to24,Race Alone - Black or African American; Both Sexes; 20 to 24 years
+ia_sex0_age20to24,Race Alone - American Indian and Alaska Native; Both Sexes; 20 to 24 years
+aa_sex0_age20to24,Race Alone - Asian; Both Sexes; 20 to 24 years
+na_sex0_age20to24,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 20 to 24 years
+tom_sex0_age20to24,Two or More Races; Both Sexes; 20 to 24 years
+totpop_sex0_age25to29,Total; Both Sexes; 25 to 29 years
+wa_sex0_age25to29,Race Alone - White; Both Sexes; 25 to 29 years
+ba_sex0_age25to29,Race Alone - Black or African American; Both Sexes; 25 to 29 years
+ia_sex0_age25to29,Race Alone - American Indian and Alaska Native; Both Sexes; 25 to 29 years
+aa_sex0_age25to29,Race Alone - Asian; Both Sexes; 25 to 29 years
+na_sex0_age25to29,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 25 to 29 years
+tom_sex0_age25to29,Two or More Races; Both Sexes; 25 to 29 years
+totpop_sex0_age30to34,Total; Both Sexes; 30 to 34 years
+wa_sex0_age30to34,Race Alone - White; Both Sexes; 30 to 34 years
+ba_sex0_age30to34,Race Alone - Black or African American; Both Sexes; 30 to 34 years
+ia_sex0_age30to34,Race Alone - American Indian and Alaska Native; Both Sexes; 30 to 34 years
+aa_sex0_age30to34,Race Alone - Asian; Both Sexes; 30 to 34 years
+na_sex0_age30to34,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 30 to 34 years
+tom_sex0_age30to34,Two or More Races; Both Sexes; 30 to 34 years
+totpop_sex0_age35to39,Total; Both Sexes; 35 to 39 years
+wa_sex0_age35to39,Race Alone - White; Both Sexes; 35 to 39 years
+ba_sex0_age35to39,Race Alone - Black or African American; Both Sexes; 35 to 39 years
+ia_sex0_age35to39,Race Alone - American Indian and Alaska Native; Both Sexes; 35 to 39 years
+aa_sex0_age35to39,Race Alone - Asian; Both Sexes; 35 to 39 years
+na_sex0_age35to39,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 35 to 39 years
+tom_sex0_age35to39,Two or More Races; Both Sexes; 35 to 39 years
+totpop_sex0_age40to44,Total; Both Sexes; 40 to 44 years
+wa_sex0_age40to44,Race Alone - White; Both Sexes; 40 to 44 years
+ba_sex0_age40to44,Race Alone - Black or African American; Both Sexes; 40 to 44 years
+ia_sex0_age40to44,Race Alone - American Indian and Alaska Native; Both Sexes; 40 to 44 years
+aa_sex0_age40to44,Race Alone - Asian; Both Sexes; 40 to 44 years
+na_sex0_age40to44,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 40 to 44 years
+tom_sex0_age40to44,Two or More Races; Both Sexes; 40 to 44 years
+totpop_sex0_age45to49,Total; Both Sexes; 45 to 49 years
+wa_sex0_age45to49,Race Alone - White; Both Sexes; 45 to 49 years
+ba_sex0_age45to49,Race Alone - Black or African American; Both Sexes; 45 to 49 years
+ia_sex0_age45to49,Race Alone - American Indian and Alaska Native; Both Sexes; 45 to 49 years
+aa_sex0_age45to49,Race Alone - Asian; Both Sexes; 45 to 49 years
+na_sex0_age45to49,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 45 to 49 years
+tom_sex0_age45to49,Two or More Races; Both Sexes; 45 to 49 years
+totpop_sex0_age50to54,Total; Both Sexes; 50 to 54 years
+wa_sex0_age50to54,Race Alone - White; Both Sexes; 50 to 54 years
+ba_sex0_age50to54,Race Alone - Black or African American; Both Sexes; 50 to 54 years
+ia_sex0_age50to54,Race Alone - American Indian and Alaska Native; Both Sexes; 50 to 54 years
+aa_sex0_age50to54,Race Alone - Asian; Both Sexes; 50 to 54 years
+na_sex0_age50to54,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 50 to 54 years
+tom_sex0_age50to54,Two or More Races; Both Sexes; 50 to 54 years
+totpop_sex0_age55to59,Total; Both Sexes; 55 to 59 years
+wa_sex0_age55to59,Race Alone - White; Both Sexes; 55 to 59 years
+ba_sex0_age55to59,Race Alone - Black or African American; Both Sexes; 55 to 59 years
+ia_sex0_age55to59,Race Alone - American Indian and Alaska Native; Both Sexes; 55 to 59 years
+aa_sex0_age55to59,Race Alone - Asian; Both Sexes; 55 to 59 years
+na_sex0_age55to59,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 55 to 59 years
+tom_sex0_age55to59,Two or More Races; Both Sexes; 55 to 59 years
+totpop_sex0_age60to64,Total; Both Sexes; 60 to 64 years
+wa_sex0_age60to64,Race Alone - White; Both Sexes; 60 to 64 years
+ba_sex0_age60to64,Race Alone - Black or African American; Both Sexes; 60 to 64 years
+ia_sex0_age60to64,Race Alone - American Indian and Alaska Native; Both Sexes; 60 to 64 years
+aa_sex0_age60to64,Race Alone - Asian; Both Sexes; 60 to 64 years
+na_sex0_age60to64,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 60 to 64 years
+tom_sex0_age60to64,Two or More Races; Both Sexes; 60 to 64 years
+totpop_sex0_age65to69,Total; Both Sexes; 65 to 69 years
+wa_sex0_age65to69,Race Alone - White; Both Sexes; 65 to 69 years
+ba_sex0_age65to69,Race Alone - Black or African American; Both Sexes; 65 to 69 years
+ia_sex0_age65to69,Race Alone - American Indian and Alaska Native; Both Sexes; 65 to 69 years
+aa_sex0_age65to69,Race Alone - Asian; Both Sexes; 65 to 69 years
+na_sex0_age65to69,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 65 to 69 years
+tom_sex0_age65to69,Two or More Races; Both Sexes; 65 to 69 years
+totpop_sex0_age70to74,Total; Both Sexes; 70 to 74 years
+wa_sex0_age70to74,Race Alone - White; Both Sexes; 70 to 74 years
+ba_sex0_age70to74,Race Alone - Black or African American; Both Sexes; 70 to 74 years
+ia_sex0_age70to74,Race Alone - American Indian and Alaska Native; Both Sexes; 70 to 74 years
+aa_sex0_age70to74,Race Alone - Asian; Both Sexes; 70 to 74 years
+na_sex0_age70to74,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 70 to 74 years
+tom_sex0_age70to74,Two or More Races; Both Sexes; 70 to 74 years
+totpop_sex0_age75to79,Total; Both Sexes; 75 to 79 years
+wa_sex0_age75to79,Race Alone - White; Both Sexes; 75 to 79 years
+ba_sex0_age75to79,Race Alone - Black or African American; Both Sexes; 75 to 79 years
+ia_sex0_age75to79,Race Alone - American Indian and Alaska Native; Both Sexes; 75 to 79 years
+aa_sex0_age75to79,Race Alone - Asian; Both Sexes; 75 to 79 years
+na_sex0_age75to79,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 75 to 79 years
+tom_sex0_age75to79,Two or More Races; Both Sexes; 75 to 79 years
+totpop_sex0_age80to84,Total; Both Sexes; 80 to 84 years
+wa_sex0_age80to84,Race Alone - White; Both Sexes; 80 to 84 years
+ba_sex0_age80to84,Race Alone - Black or African American; Both Sexes; 80 to 84 years
+ia_sex0_age80to84,Race Alone - American Indian and Alaska Native; Both Sexes; 80 to 84 years
+aa_sex0_age80to84,Race Alone - Asian; Both Sexes; 80 to 84 years
+na_sex0_age80to84,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 80 to 84 years
+tom_sex0_age80to84,Two or More Races; Both Sexes; 80 to 84 years
+totpop_sex0_age85plus,Total; Both Sexes; 85 years and over
+wa_sex0_age85plus,Race Alone - White; Both Sexes; 85 years and over
+ba_sex0_age85plus,Race Alone - Black or African American; Both Sexes; 85 years and over
+ia_sex0_age85plus,Race Alone - American Indian and Alaska Native; Both Sexes; 85 years and over
+aa_sex0_age85plus,Race Alone - Asian; Both Sexes; 85 years and over
+na_sex0_age85plus,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 85 years and over
+tom_sex0_age85plus,Two or More Races; Both Sexes; 85 years and over
+totpop_sex0_age0to17,Total; Both Sexes; Under 18 years
+wa_sex0_age0to17,Race Alone - White; Both Sexes; Under 18 years
+ba_sex0_age0to17,Race Alone - Black or African American; Both Sexes; Under 18 years
+ia_sex0_age0to17,Race Alone - American Indian and Alaska Native; Both Sexes; Under 18 years
+aa_sex0_age0to17,Race Alone - Asian; Both Sexes; Under 18 years
+na_sex0_age0to17,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; Under 18 years
+tom_sex0_age0to17,Two or More Races; Both Sexes; Under 18 years
+totpop_sex0_age0to4_,Total; Both Sexes; Under 18 years - Under 5 years 
+wa_sex0_age0to4_,Race Alone - White; Both Sexes; Under 18 years - Under 5 years 
+ba_sex0_age0to4_,Race Alone - Black or African American; Both Sexes; Under 18 years - Under 5 years 
+ia_sex0_age0to4_,Race Alone - American Indian and Alaska Native; Both Sexes; Under 18 years - Under 5 years 
+aa_sex0_age0to4_,Race Alone - Asian; Both Sexes; Under 18 years - Under 5 years 
+na_sex0_age0to4_,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; Under 18 years - Under 5 years 
+tom_sex0_age0to4_,Two or More Races; Both Sexes; Under 18 years - Under 5 years 
+totpop_sex0_age5to13,Total; Both Sexes; Under 18 years - 5 to 13 years
+wa_sex0_age5to13,Race Alone - White; Both Sexes; Under 18 years - 5 to 13 years
+ba_sex0_age5to13,Race Alone - Black or African American; Both Sexes; Under 18 years - 5 to 13 years
+ia_sex0_age5to13,Race Alone - American Indian and Alaska Native; Both Sexes; Under 18 years - 5 to 13 years
+aa_sex0_age5to13,Race Alone - Asian; Both Sexes; Under 18 years - 5 to 13 years
+na_sex0_age5to13,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; Under 18 years - 5 to 13 years
+tom_sex0_age5to13,Two or More Races; Both Sexes; Under 18 years - 5 to 13 years
+totpop_sex0_age14to17,Total; Both Sexes; Under 18 years - 14 to 17 years
+wa_sex0_age14to17,Race Alone - White; Both Sexes; Under 18 years - 14 to 17 years
+ba_sex0_age14to17,Race Alone - Black or African American; Both Sexes; Under 18 years - 14 to 17 years
+ia_sex0_age14to17,Race Alone - American Indian and Alaska Native; Both Sexes; Under 18 years - 14 to 17 years
+aa_sex0_age14to17,Race Alone - Asian; Both Sexes; Under 18 years - 14 to 17 years
+na_sex0_age14to17,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; Under 18 years - 14 to 17 years
+tom_sex0_age14to17,Two or More Races; Both Sexes; Under 18 years - 14 to 17 years
+totpop_sex0_age18to64,Total; Both Sexes; 18 to 64 years
+wa_sex0_age18to64,Race Alone - White; Both Sexes; 18 to 64 years
+ba_sex0_age18to64,Race Alone - Black or African American; Both Sexes; 18 to 64 years
+ia_sex0_age18to64,Race Alone - American Indian and Alaska Native; Both Sexes; 18 to 64 years
+aa_sex0_age18to64,Race Alone - Asian; Both Sexes; 18 to 64 years
+na_sex0_age18to64,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 18 to 64 years
+tom_sex0_age18to64,Two or More Races; Both Sexes; 18 to 64 years
+totpop_sex0_age18to24,Total; Both Sexes; 18 to 64 years - 18 to 24 years
+wa_sex0_age18to24,Race Alone - White; Both Sexes; 18 to 64 years - 18 to 24 years
+ba_sex0_age18to24,Race Alone - Black or African American; Both Sexes; 18 to 64 years - 18 to 24 years
+ia_sex0_age18to24,Race Alone - American Indian and Alaska Native; Both Sexes; 18 to 64 years - 18 to 24 years
+aa_sex0_age18to24,Race Alone - Asian; Both Sexes; 18 to 64 years - 18 to 24 years
+na_sex0_age18to24,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 18 to 64 years - 18 to 24 years
+tom_sex0_age18to24,Two or More Races; Both Sexes; 18 to 64 years - 18 to 24 years
+totpop_sex0_age25to44,Total; Both Sexes; 18 to 64 years - 25 to 44 years
+wa_sex0_age25to44,Race Alone - White; Both Sexes; 18 to 64 years - 25 to 44 years
+ba_sex0_age25to44,Race Alone - Black or African American; Both Sexes; 18 to 64 years - 25 to 44 years
+ia_sex0_age25to44,Race Alone - American Indian and Alaska Native; Both Sexes; 18 to 64 years - 25 to 44 years
+aa_sex0_age25to44,Race Alone - Asian; Both Sexes; 18 to 64 years - 25 to 44 years
+na_sex0_age25to44,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 18 to 64 years - 25 to 44 years
+tom_sex0_age25to44,Two or More Races; Both Sexes; 18 to 64 years - 25 to 44 years
+totpop_sex0_age45to64,Total; Both Sexes; 18 to 64 years - 45 to 64 years
+wa_sex0_age45to64,Race Alone - White; Both Sexes; 18 to 64 years - 45 to 64 years
+ba_sex0_age45to64,Race Alone - Black or African American; Both Sexes; 18 to 64 years - 45 to 64 years
+ia_sex0_age45to64,Race Alone - American Indian and Alaska Native; Both Sexes; 18 to 64 years - 45 to 64 years
+aa_sex0_age45to64,Race Alone - Asian; Both Sexes; 18 to 64 years - 45 to 64 years
+na_sex0_age45to64,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 18 to 64 years - 45 to 64 years
+tom_sex0_age45to64,Two or More Races; Both Sexes; 18 to 64 years - 45 to 64 years
+totpop_sex0_age65plus,Total; Both Sexes; 65 years and over
+wa_sex0_age65plus,Race Alone - White; Both Sexes; 65 years and over
+ba_sex0_age65plus,Race Alone - Black or African American; Both Sexes; 65 years and over
+ia_sex0_age65plus,Race Alone - American Indian and Alaska Native; Both Sexes; 65 years and over
+aa_sex0_age65plus,Race Alone - Asian; Both Sexes; 65 years and over
+na_sex0_age65plus,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 65 years and over
+tom_sex0_age65plus,Two or More Races; Both Sexes; 65 years and over
+totpop_sex0_age85plus_,Total; Both Sexes; 85 years and over 
+wa_sex0_age85plus_,Race Alone - White; Both Sexes; 85 years and over 
+ba_sex0_age85plus_,Race Alone - Black or African American; Both Sexes; 85 years and over 
+ia_sex0_age85plus_,Race Alone - American Indian and Alaska Native; Both Sexes; 85 years and over 
+aa_sex0_age85plus_,Race Alone - Asian; Both Sexes; 85 years and over 
+na_sex0_age85plus_,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 85 years and over 
+tom_sex0_age85plus_,Two or More Races; Both Sexes; 85 years and over 
+totpop_sex0_age16plus,Total; Both Sexes; 16 years and over
+wa_sex0_age16plus,Race Alone - White; Both Sexes; 16 years and over
+ba_sex0_age16plus,Race Alone - Black or African American; Both Sexes; 16 years and over
+ia_sex0_age16plus,Race Alone - American Indian and Alaska Native; Both Sexes; 16 years and over
+aa_sex0_age16plus,Race Alone - Asian; Both Sexes; 16 years and over
+na_sex0_age16plus,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 16 years and over
+tom_sex0_age16plus,Two or More Races; Both Sexes; 16 years and over
+totpop_sex0_age18plus,Total; Both Sexes; 18 years and over
+wa_sex0_age18plus,Race Alone - White; Both Sexes; 18 years and over
+ba_sex0_age18plus,Race Alone - Black or African American; Both Sexes; 18 years and over
+ia_sex0_age18plus,Race Alone - American Indian and Alaska Native; Both Sexes; 18 years and over
+aa_sex0_age18plus,Race Alone - Asian; Both Sexes; 18 years and over
+na_sex0_age18plus,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 18 years and over
+tom_sex0_age18plus,Two or More Races; Both Sexes; 18 years and over
+totpop_sex0_age15to44,Total; Both Sexes; 15 to 44 years
+wa_sex0_age15to44,Race Alone - White; Both Sexes; 15 to 44 years
+ba_sex0_age15to44,Race Alone - Black or African American; Both Sexes; 15 to 44 years
+ia_sex0_age15to44,Race Alone - American Indian and Alaska Native; Both Sexes; 15 to 44 years
+aa_sex0_age15to44,Race Alone - Asian; Both Sexes; 15 to 44 years
+na_sex0_age15to44,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; 15 to 44 years
+tom_sex0_age15to44,Two or More Races; Both Sexes; 15 to 44 years
+totpop_sex0_medage,Total; Both Sexes; Median age (years)
+wa_sex0_medage,Race Alone - White; Both Sexes; Median age (years)
+ba_sex0_medage,Race Alone - Black or African American; Both Sexes; Median age (years)
+ia_sex0_medage,Race Alone - American Indian and Alaska Native; Both Sexes; Median age (years)
+aa_sex0_medage,Race Alone - Asian; Both Sexes; Median age (years)
+na_sex0_medage,Race Alone - Native Hawaiian and Other Pacific Islander; Both Sexes; Median age (years)
+tom_sex0_medage,Two or More Races; Both Sexes; Median age (years)
+totpop_sex1_age999,Total; Male; Total
+wa_sex1_age999,Race Alone - White; Male; Total
+ba_sex1_age999,Race Alone - Black or African American; Male; Total
+ia_sex1_age999,Race Alone - American Indian and Alaska Native; Male; Total
+aa_sex1_age999,Race Alone - Asian; Male; Total
+na_sex1_age999,Race Alone - Native Hawaiian and Other Pacific Islander; Male; Total
+tom_sex1_age999,Two or More Races; Male; Total
+totpop_sex1_age0to4,Total; Male; Under 5 years
+wa_sex1_age0to4,Race Alone - White; Male; Under 5 years
+ba_sex1_age0to4,Race Alone - Black or African American; Male; Under 5 years
+ia_sex1_age0to4,Race Alone - American Indian and Alaska Native; Male; Under 5 years
+aa_sex1_age0to4,Race Alone - Asian; Male; Under 5 years
+na_sex1_age0to4,Race Alone - Native Hawaiian and Other Pacific Islander; Male; Under 5 years
+tom_sex1_age0to4,Two or More Races; Male; Under 5 years
+totpop_sex1_age5to9,Total; Male; 5 to 9 years
+wa_sex1_age5to9,Race Alone - White; Male; 5 to 9 years
+ba_sex1_age5to9,Race Alone - Black or African American; Male; 5 to 9 years
+ia_sex1_age5to9,Race Alone - American Indian and Alaska Native; Male; 5 to 9 years
+aa_sex1_age5to9,Race Alone - Asian; Male; 5 to 9 years
+na_sex1_age5to9,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 5 to 9 years
+tom_sex1_age5to9,Two or More Races; Male; 5 to 9 years
+totpop_sex1_age10to14,Total; Male; 10 to 14 years
+wa_sex1_age10to14,Race Alone - White; Male; 10 to 14 years
+ba_sex1_age10to14,Race Alone - Black or African American; Male; 10 to 14 years
+ia_sex1_age10to14,Race Alone - American Indian and Alaska Native; Male; 10 to 14 years
+aa_sex1_age10to14,Race Alone - Asian; Male; 10 to 14 years
+na_sex1_age10to14,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 10 to 14 years
+tom_sex1_age10to14,Two or More Races; Male; 10 to 14 years
+totpop_sex1_age15to19,Total; Male; 15 to 19 years
+wa_sex1_age15to19,Race Alone - White; Male; 15 to 19 years
+ba_sex1_age15to19,Race Alone - Black or African American; Male; 15 to 19 years
+ia_sex1_age15to19,Race Alone - American Indian and Alaska Native; Male; 15 to 19 years
+aa_sex1_age15to19,Race Alone - Asian; Male; 15 to 19 years
+na_sex1_age15to19,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 15 to 19 years
+tom_sex1_age15to19,Two or More Races; Male; 15 to 19 years
+totpop_sex1_age20to24,Total; Male; 20 to 24 years
+wa_sex1_age20to24,Race Alone - White; Male; 20 to 24 years
+ba_sex1_age20to24,Race Alone - Black or African American; Male; 20 to 24 years
+ia_sex1_age20to24,Race Alone - American Indian and Alaska Native; Male; 20 to 24 years
+aa_sex1_age20to24,Race Alone - Asian; Male; 20 to 24 years
+na_sex1_age20to24,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 20 to 24 years
+tom_sex1_age20to24,Two or More Races; Male; 20 to 24 years
+totpop_sex1_age25to29,Total; Male; 25 to 29 years
+wa_sex1_age25to29,Race Alone - White; Male; 25 to 29 years
+ba_sex1_age25to29,Race Alone - Black or African American; Male; 25 to 29 years
+ia_sex1_age25to29,Race Alone - American Indian and Alaska Native; Male; 25 to 29 years
+aa_sex1_age25to29,Race Alone - Asian; Male; 25 to 29 years
+na_sex1_age25to29,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 25 to 29 years
+tom_sex1_age25to29,Two or More Races; Male; 25 to 29 years
+totpop_sex1_age30to34,Total; Male; 30 to 34 years
+wa_sex1_age30to34,Race Alone - White; Male; 30 to 34 years
+ba_sex1_age30to34,Race Alone - Black or African American; Male; 30 to 34 years
+ia_sex1_age30to34,Race Alone - American Indian and Alaska Native; Male; 30 to 34 years
+aa_sex1_age30to34,Race Alone - Asian; Male; 30 to 34 years
+na_sex1_age30to34,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 30 to 34 years
+tom_sex1_age30to34,Two or More Races; Male; 30 to 34 years
+totpop_sex1_age35to39,Total; Male; 35 to 39 years
+wa_sex1_age35to39,Race Alone - White; Male; 35 to 39 years
+ba_sex1_age35to39,Race Alone - Black or African American; Male; 35 to 39 years
+ia_sex1_age35to39,Race Alone - American Indian and Alaska Native; Male; 35 to 39 years
+aa_sex1_age35to39,Race Alone - Asian; Male; 35 to 39 years
+na_sex1_age35to39,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 35 to 39 years
+tom_sex1_age35to39,Two or More Races; Male; 35 to 39 years
+totpop_sex1_age40to44,Total; Male; 40 to 44 years
+wa_sex1_age40to44,Race Alone - White; Male; 40 to 44 years
+ba_sex1_age40to44,Race Alone - Black or African American; Male; 40 to 44 years
+ia_sex1_age40to44,Race Alone - American Indian and Alaska Native; Male; 40 to 44 years
+aa_sex1_age40to44,Race Alone - Asian; Male; 40 to 44 years
+na_sex1_age40to44,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 40 to 44 years
+tom_sex1_age40to44,Two or More Races; Male; 40 to 44 years
+totpop_sex1_age45to49,Total; Male; 45 to 49 years
+wa_sex1_age45to49,Race Alone - White; Male; 45 to 49 years
+ba_sex1_age45to49,Race Alone - Black or African American; Male; 45 to 49 years
+ia_sex1_age45to49,Race Alone - American Indian and Alaska Native; Male; 45 to 49 years
+aa_sex1_age45to49,Race Alone - Asian; Male; 45 to 49 years
+na_sex1_age45to49,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 45 to 49 years
+tom_sex1_age45to49,Two or More Races; Male; 45 to 49 years
+totpop_sex1_age50to54,Total; Male; 50 to 54 years
+wa_sex1_age50to54,Race Alone - White; Male; 50 to 54 years
+ba_sex1_age50to54,Race Alone - Black or African American; Male; 50 to 54 years
+ia_sex1_age50to54,Race Alone - American Indian and Alaska Native; Male; 50 to 54 years
+aa_sex1_age50to54,Race Alone - Asian; Male; 50 to 54 years
+na_sex1_age50to54,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 50 to 54 years
+tom_sex1_age50to54,Two or More Races; Male; 50 to 54 years
+totpop_sex1_age55to59,Total; Male; 55 to 59 years
+wa_sex1_age55to59,Race Alone - White; Male; 55 to 59 years
+ba_sex1_age55to59,Race Alone - Black or African American; Male; 55 to 59 years
+ia_sex1_age55to59,Race Alone - American Indian and Alaska Native; Male; 55 to 59 years
+aa_sex1_age55to59,Race Alone - Asian; Male; 55 to 59 years
+na_sex1_age55to59,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 55 to 59 years
+tom_sex1_age55to59,Two or More Races; Male; 55 to 59 years
+totpop_sex1_age60to64,Total; Male; 60 to 64 years
+wa_sex1_age60to64,Race Alone - White; Male; 60 to 64 years
+ba_sex1_age60to64,Race Alone - Black or African American; Male; 60 to 64 years
+ia_sex1_age60to64,Race Alone - American Indian and Alaska Native; Male; 60 to 64 years
+aa_sex1_age60to64,Race Alone - Asian; Male; 60 to 64 years
+na_sex1_age60to64,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 60 to 64 years
+tom_sex1_age60to64,Two or More Races; Male; 60 to 64 years
+totpop_sex1_age65to69,Total; Male; 65 to 69 years
+wa_sex1_age65to69,Race Alone - White; Male; 65 to 69 years
+ba_sex1_age65to69,Race Alone - Black or African American; Male; 65 to 69 years
+ia_sex1_age65to69,Race Alone - American Indian and Alaska Native; Male; 65 to 69 years
+aa_sex1_age65to69,Race Alone - Asian; Male; 65 to 69 years
+na_sex1_age65to69,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 65 to 69 years
+tom_sex1_age65to69,Two or More Races; Male; 65 to 69 years
+totpop_sex1_age70to74,Total; Male; 70 to 74 years
+wa_sex1_age70to74,Race Alone - White; Male; 70 to 74 years
+ba_sex1_age70to74,Race Alone - Black or African American; Male; 70 to 74 years
+ia_sex1_age70to74,Race Alone - American Indian and Alaska Native; Male; 70 to 74 years
+aa_sex1_age70to74,Race Alone - Asian; Male; 70 to 74 years
+na_sex1_age70to74,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 70 to 74 years
+tom_sex1_age70to74,Two or More Races; Male; 70 to 74 years
+totpop_sex1_age75to79,Total; Male; 75 to 79 years
+wa_sex1_age75to79,Race Alone - White; Male; 75 to 79 years
+ba_sex1_age75to79,Race Alone - Black or African American; Male; 75 to 79 years
+ia_sex1_age75to79,Race Alone - American Indian and Alaska Native; Male; 75 to 79 years
+aa_sex1_age75to79,Race Alone - Asian; Male; 75 to 79 years
+na_sex1_age75to79,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 75 to 79 years
+tom_sex1_age75to79,Two or More Races; Male; 75 to 79 years
+totpop_sex1_age80to84,Total; Male; 80 to 84 years
+wa_sex1_age80to84,Race Alone - White; Male; 80 to 84 years
+ba_sex1_age80to84,Race Alone - Black or African American; Male; 80 to 84 years
+ia_sex1_age80to84,Race Alone - American Indian and Alaska Native; Male; 80 to 84 years
+aa_sex1_age80to84,Race Alone - Asian; Male; 80 to 84 years
+na_sex1_age80to84,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 80 to 84 years
+tom_sex1_age80to84,Two or More Races; Male; 80 to 84 years
+totpop_sex1_age85plus,Total; Male; 85 years and over
+wa_sex1_age85plus,Race Alone - White; Male; 85 years and over
+ba_sex1_age85plus,Race Alone - Black or African American; Male; 85 years and over
+ia_sex1_age85plus,Race Alone - American Indian and Alaska Native; Male; 85 years and over
+aa_sex1_age85plus,Race Alone - Asian; Male; 85 years and over
+na_sex1_age85plus,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 85 years and over
+tom_sex1_age85plus,Two or More Races; Male; 85 years and over
+totpop_sex1_age0to17,Total; Male; Under 18 years
+wa_sex1_age0to17,Race Alone - White; Male; Under 18 years
+ba_sex1_age0to17,Race Alone - Black or African American; Male; Under 18 years
+ia_sex1_age0to17,Race Alone - American Indian and Alaska Native; Male; Under 18 years
+aa_sex1_age0to17,Race Alone - Asian; Male; Under 18 years
+na_sex1_age0to17,Race Alone - Native Hawaiian and Other Pacific Islander; Male; Under 18 years
+tom_sex1_age0to17,Two or More Races; Male; Under 18 years
+totpop_sex1_age0to4_,Total; Male; Under 18 years - Under 5 years 
+wa_sex1_age0to4_,Race Alone - White; Male; Under 18 years - Under 5 years 
+ba_sex1_age0to4_,Race Alone - Black or African American; Male; Under 18 years - Under 5 years 
+ia_sex1_age0to4_,Race Alone - American Indian and Alaska Native; Male; Under 18 years - Under 5 years 
+aa_sex1_age0to4_,Race Alone - Asian; Male; Under 18 years - Under 5 years 
+na_sex1_age0to4_,Race Alone - Native Hawaiian and Other Pacific Islander; Male; Under 18 years - Under 5 years 
+tom_sex1_age0to4_,Two or More Races; Male; Under 18 years - Under 5 years 
+totpop_sex1_age5to13,Total; Male; Under 18 years - 5 to 13 years
+wa_sex1_age5to13,Race Alone - White; Male; Under 18 years - 5 to 13 years
+ba_sex1_age5to13,Race Alone - Black or African American; Male; Under 18 years - 5 to 13 years
+ia_sex1_age5to13,Race Alone - American Indian and Alaska Native; Male; Under 18 years - 5 to 13 years
+aa_sex1_age5to13,Race Alone - Asian; Male; Under 18 years - 5 to 13 years
+na_sex1_age5to13,Race Alone - Native Hawaiian and Other Pacific Islander; Male; Under 18 years - 5 to 13 years
+tom_sex1_age5to13,Two or More Races; Male; Under 18 years - 5 to 13 years
+totpop_sex1_age14to17,Total; Male; Under 18 years - 14 to 17 years
+wa_sex1_age14to17,Race Alone - White; Male; Under 18 years - 14 to 17 years
+ba_sex1_age14to17,Race Alone - Black or African American; Male; Under 18 years - 14 to 17 years
+ia_sex1_age14to17,Race Alone - American Indian and Alaska Native; Male; Under 18 years - 14 to 17 years
+aa_sex1_age14to17,Race Alone - Asian; Male; Under 18 years - 14 to 17 years
+na_sex1_age14to17,Race Alone - Native Hawaiian and Other Pacific Islander; Male; Under 18 years - 14 to 17 years
+tom_sex1_age14to17,Two or More Races; Male; Under 18 years - 14 to 17 years
+totpop_sex1_age18to64,Total; Male; 18 to 64 years
+wa_sex1_age18to64,Race Alone - White; Male; 18 to 64 years
+ba_sex1_age18to64,Race Alone - Black or African American; Male; 18 to 64 years
+ia_sex1_age18to64,Race Alone - American Indian and Alaska Native; Male; 18 to 64 years
+aa_sex1_age18to64,Race Alone - Asian; Male; 18 to 64 years
+na_sex1_age18to64,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 18 to 64 years
+tom_sex1_age18to64,Two or More Races; Male; 18 to 64 years
+totpop_sex1_age18to24,Total; Male; 18 to 64 years - 18 to 24 years
+wa_sex1_age18to24,Race Alone - White; Male; 18 to 64 years - 18 to 24 years
+ba_sex1_age18to24,Race Alone - Black or African American; Male; 18 to 64 years - 18 to 24 years
+ia_sex1_age18to24,Race Alone - American Indian and Alaska Native; Male; 18 to 64 years - 18 to 24 years
+aa_sex1_age18to24,Race Alone - Asian; Male; 18 to 64 years - 18 to 24 years
+na_sex1_age18to24,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 18 to 64 years - 18 to 24 years
+tom_sex1_age18to24,Two or More Races; Male; 18 to 64 years - 18 to 24 years
+totpop_sex1_age25to44,Total; Male; 18 to 64 years - 25 to 44 years
+wa_sex1_age25to44,Race Alone - White; Male; 18 to 64 years - 25 to 44 years
+ba_sex1_age25to44,Race Alone - Black or African American; Male; 18 to 64 years - 25 to 44 years
+ia_sex1_age25to44,Race Alone - American Indian and Alaska Native; Male; 18 to 64 years - 25 to 44 years
+aa_sex1_age25to44,Race Alone - Asian; Male; 18 to 64 years - 25 to 44 years
+na_sex1_age25to44,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 18 to 64 years - 25 to 44 years
+tom_sex1_age25to44,Two or More Races; Male; 18 to 64 years - 25 to 44 years
+totpop_sex1_age45to64,Total; Male; 18 to 64 years - 45 to 64 years
+wa_sex1_age45to64,Race Alone - White; Male; 18 to 64 years - 45 to 64 years
+ba_sex1_age45to64,Race Alone - Black or African American; Male; 18 to 64 years - 45 to 64 years
+ia_sex1_age45to64,Race Alone - American Indian and Alaska Native; Male; 18 to 64 years - 45 to 64 years
+aa_sex1_age45to64,Race Alone - Asian; Male; 18 to 64 years - 45 to 64 years
+na_sex1_age45to64,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 18 to 64 years - 45 to 64 years
+tom_sex1_age45to64,Two or More Races; Male; 18 to 64 years - 45 to 64 years
+totpop_sex1_age65plus,Total; Male; 65 years and over
+wa_sex1_age65plus,Race Alone - White; Male; 65 years and over
+ba_sex1_age65plus,Race Alone - Black or African American; Male; 65 years and over
+ia_sex1_age65plus,Race Alone - American Indian and Alaska Native; Male; 65 years and over
+aa_sex1_age65plus,Race Alone - Asian; Male; 65 years and over
+na_sex1_age65plus,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 65 years and over
+tom_sex1_age65plus,Two or More Races; Male; 65 years and over
+totpop_sex1_age85plus_,Total; Male; 85 years and over 
+wa_sex1_age85plus_,Race Alone - White; Male; 85 years and over 
+ba_sex1_age85plus_,Race Alone - Black or African American; Male; 85 years and over 
+ia_sex1_age85plus_,Race Alone - American Indian and Alaska Native; Male; 85 years and over 
+aa_sex1_age85plus_,Race Alone - Asian; Male; 85 years and over 
+na_sex1_age85plus_,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 85 years and over 
+tom_sex1_age85plus_,Two or More Races; Male; 85 years and over 
+totpop_sex1_age16plus,Total; Male; 16 years and over
+wa_sex1_age16plus,Race Alone - White; Male; 16 years and over
+ba_sex1_age16plus,Race Alone - Black or African American; Male; 16 years and over
+ia_sex1_age16plus,Race Alone - American Indian and Alaska Native; Male; 16 years and over
+aa_sex1_age16plus,Race Alone - Asian; Male; 16 years and over
+na_sex1_age16plus,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 16 years and over
+tom_sex1_age16plus,Two or More Races; Male; 16 years and over
+totpop_sex1_age18plus,Total; Male; 18 years and over
+wa_sex1_age18plus,Race Alone - White; Male; 18 years and over
+ba_sex1_age18plus,Race Alone - Black or African American; Male; 18 years and over
+ia_sex1_age18plus,Race Alone - American Indian and Alaska Native; Male; 18 years and over
+aa_sex1_age18plus,Race Alone - Asian; Male; 18 years and over
+na_sex1_age18plus,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 18 years and over
+tom_sex1_age18plus,Two or More Races; Male; 18 years and over
+totpop_sex1_age15to44,Total; Male; 15 to 44 years
+wa_sex1_age15to44,Race Alone - White; Male; 15 to 44 years
+ba_sex1_age15to44,Race Alone - Black or African American; Male; 15 to 44 years
+ia_sex1_age15to44,Race Alone - American Indian and Alaska Native; Male; 15 to 44 years
+aa_sex1_age15to44,Race Alone - Asian; Male; 15 to 44 years
+na_sex1_age15to44,Race Alone - Native Hawaiian and Other Pacific Islander; Male; 15 to 44 years
+tom_sex1_age15to44,Two or More Races; Male; 15 to 44 years
+totpop_sex1_medage,Total; Male; Median age (years)
+wa_sex1_medage,Race Alone - White; Male; Median age (years)
+ba_sex1_medage,Race Alone - Black or African American; Male; Median age (years)
+ia_sex1_medage,Race Alone - American Indian and Alaska Native; Male; Median age (years)
+aa_sex1_medage,Race Alone - Asian; Male; Median age (years)
+na_sex1_medage,Race Alone - Native Hawaiian and Other Pacific Islander; Male; Median age (years)
+tom_sex1_medage,Two or More Races; Male; Median age (years)
+totpop_sex2_age999,Total; Female; Total
+wa_sex2_age999,Race Alone - White; Female; Total
+ba_sex2_age999,Race Alone - Black or African American; Female; Total
+ia_sex2_age999,Race Alone - American Indian and Alaska Native; Female; Total
+aa_sex2_age999,Race Alone - Asian; Female; Total
+na_sex2_age999,Race Alone - Native Hawaiian and Other Pacific Islander; Female; Total
+tom_sex2_age999,Two or More Races; Female; Total
+totpop_sex2_age0to4,Total; Female; Under 5 years
+wa_sex2_age0to4,Race Alone - White; Female; Under 5 years
+ba_sex2_age0to4,Race Alone - Black or African American; Female; Under 5 years
+ia_sex2_age0to4,Race Alone - American Indian and Alaska Native; Female; Under 5 years
+aa_sex2_age0to4,Race Alone - Asian; Female; Under 5 years
+na_sex2_age0to4,Race Alone - Native Hawaiian and Other Pacific Islander; Female; Under 5 years
+tom_sex2_age0to4,Two or More Races; Female; Under 5 years
+totpop_sex2_age5to9,Total; Female; 5 to 9 years
+wa_sex2_age5to9,Race Alone - White; Female; 5 to 9 years
+ba_sex2_age5to9,Race Alone - Black or African American; Female; 5 to 9 years
+ia_sex2_age5to9,Race Alone - American Indian and Alaska Native; Female; 5 to 9 years
+aa_sex2_age5to9,Race Alone - Asian; Female; 5 to 9 years
+na_sex2_age5to9,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 5 to 9 years
+tom_sex2_age5to9,Two or More Races; Female; 5 to 9 years
+totpop_sex2_age10to14,Total; Female; 10 to 14 years
+wa_sex2_age10to14,Race Alone - White; Female; 10 to 14 years
+ba_sex2_age10to14,Race Alone - Black or African American; Female; 10 to 14 years
+ia_sex2_age10to14,Race Alone - American Indian and Alaska Native; Female; 10 to 14 years
+aa_sex2_age10to14,Race Alone - Asian; Female; 10 to 14 years
+na_sex2_age10to14,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 10 to 14 years
+tom_sex2_age10to14,Two or More Races; Female; 10 to 14 years
+totpop_sex2_age15to19,Total; Female; 15 to 19 years
+wa_sex2_age15to19,Race Alone - White; Female; 15 to 19 years
+ba_sex2_age15to19,Race Alone - Black or African American; Female; 15 to 19 years
+ia_sex2_age15to19,Race Alone - American Indian and Alaska Native; Female; 15 to 19 years
+aa_sex2_age15to19,Race Alone - Asian; Female; 15 to 19 years
+na_sex2_age15to19,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 15 to 19 years
+tom_sex2_age15to19,Two or More Races; Female; 15 to 19 years
+totpop_sex2_age20to24,Total; Female; 20 to 24 years
+wa_sex2_age20to24,Race Alone - White; Female; 20 to 24 years
+ba_sex2_age20to24,Race Alone - Black or African American; Female; 20 to 24 years
+ia_sex2_age20to24,Race Alone - American Indian and Alaska Native; Female; 20 to 24 years
+aa_sex2_age20to24,Race Alone - Asian; Female; 20 to 24 years
+na_sex2_age20to24,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 20 to 24 years
+tom_sex2_age20to24,Two or More Races; Female; 20 to 24 years
+totpop_sex2_age25to29,Total; Female; 25 to 29 years
+wa_sex2_age25to29,Race Alone - White; Female; 25 to 29 years
+ba_sex2_age25to29,Race Alone - Black or African American; Female; 25 to 29 years
+ia_sex2_age25to29,Race Alone - American Indian and Alaska Native; Female; 25 to 29 years
+aa_sex2_age25to29,Race Alone - Asian; Female; 25 to 29 years
+na_sex2_age25to29,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 25 to 29 years
+tom_sex2_age25to29,Two or More Races; Female; 25 to 29 years
+totpop_sex2_age30to34,Total; Female; 30 to 34 years
+wa_sex2_age30to34,Race Alone - White; Female; 30 to 34 years
+ba_sex2_age30to34,Race Alone - Black or African American; Female; 30 to 34 years
+ia_sex2_age30to34,Race Alone - American Indian and Alaska Native; Female; 30 to 34 years
+aa_sex2_age30to34,Race Alone - Asian; Female; 30 to 34 years
+na_sex2_age30to34,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 30 to 34 years
+tom_sex2_age30to34,Two or More Races; Female; 30 to 34 years
+totpop_sex2_age35to39,Total; Female; 35 to 39 years
+wa_sex2_age35to39,Race Alone - White; Female; 35 to 39 years
+ba_sex2_age35to39,Race Alone - Black or African American; Female; 35 to 39 years
+ia_sex2_age35to39,Race Alone - American Indian and Alaska Native; Female; 35 to 39 years
+aa_sex2_age35to39,Race Alone - Asian; Female; 35 to 39 years
+na_sex2_age35to39,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 35 to 39 years
+tom_sex2_age35to39,Two or More Races; Female; 35 to 39 years
+totpop_sex2_age40to44,Total; Female; 40 to 44 years
+wa_sex2_age40to44,Race Alone - White; Female; 40 to 44 years
+ba_sex2_age40to44,Race Alone - Black or African American; Female; 40 to 44 years
+ia_sex2_age40to44,Race Alone - American Indian and Alaska Native; Female; 40 to 44 years
+aa_sex2_age40to44,Race Alone - Asian; Female; 40 to 44 years
+na_sex2_age40to44,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 40 to 44 years
+tom_sex2_age40to44,Two or More Races; Female; 40 to 44 years
+totpop_sex2_age45to49,Total; Female; 45 to 49 years
+wa_sex2_age45to49,Race Alone - White; Female; 45 to 49 years
+ba_sex2_age45to49,Race Alone - Black or African American; Female; 45 to 49 years
+ia_sex2_age45to49,Race Alone - American Indian and Alaska Native; Female; 45 to 49 years
+aa_sex2_age45to49,Race Alone - Asian; Female; 45 to 49 years
+na_sex2_age45to49,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 45 to 49 years
+tom_sex2_age45to49,Two or More Races; Female; 45 to 49 years
+totpop_sex2_age50to54,Total; Female; 50 to 54 years
+wa_sex2_age50to54,Race Alone - White; Female; 50 to 54 years
+ba_sex2_age50to54,Race Alone - Black or African American; Female; 50 to 54 years
+ia_sex2_age50to54,Race Alone - American Indian and Alaska Native; Female; 50 to 54 years
+aa_sex2_age50to54,Race Alone - Asian; Female; 50 to 54 years
+na_sex2_age50to54,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 50 to 54 years
+tom_sex2_age50to54,Two or More Races; Female; 50 to 54 years
+totpop_sex2_age55to59,Total; Female; 55 to 59 years
+wa_sex2_age55to59,Race Alone - White; Female; 55 to 59 years
+ba_sex2_age55to59,Race Alone - Black or African American; Female; 55 to 59 years
+ia_sex2_age55to59,Race Alone - American Indian and Alaska Native; Female; 55 to 59 years
+aa_sex2_age55to59,Race Alone - Asian; Female; 55 to 59 years
+na_sex2_age55to59,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 55 to 59 years
+tom_sex2_age55to59,Two or More Races; Female; 55 to 59 years
+totpop_sex2_age60to64,Total; Female; 60 to 64 years
+wa_sex2_age60to64,Race Alone - White; Female; 60 to 64 years
+ba_sex2_age60to64,Race Alone - Black or African American; Female; 60 to 64 years
+ia_sex2_age60to64,Race Alone - American Indian and Alaska Native; Female; 60 to 64 years
+aa_sex2_age60to64,Race Alone - Asian; Female; 60 to 64 years
+na_sex2_age60to64,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 60 to 64 years
+tom_sex2_age60to64,Two or More Races; Female; 60 to 64 years
+totpop_sex2_age65to69,Total; Female; 65 to 69 years
+wa_sex2_age65to69,Race Alone - White; Female; 65 to 69 years
+ba_sex2_age65to69,Race Alone - Black or African American; Female; 65 to 69 years
+ia_sex2_age65to69,Race Alone - American Indian and Alaska Native; Female; 65 to 69 years
+aa_sex2_age65to69,Race Alone - Asian; Female; 65 to 69 years
+na_sex2_age65to69,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 65 to 69 years
+tom_sex2_age65to69,Two or More Races; Female; 65 to 69 years
+totpop_sex2_age70to74,Total; Female; 70 to 74 years
+wa_sex2_age70to74,Race Alone - White; Female; 70 to 74 years
+ba_sex2_age70to74,Race Alone - Black or African American; Female; 70 to 74 years
+ia_sex2_age70to74,Race Alone - American Indian and Alaska Native; Female; 70 to 74 years
+aa_sex2_age70to74,Race Alone - Asian; Female; 70 to 74 years
+na_sex2_age70to74,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 70 to 74 years
+tom_sex2_age70to74,Two or More Races; Female; 70 to 74 years
+totpop_sex2_age75to79,Total; Female; 75 to 79 years
+wa_sex2_age75to79,Race Alone - White; Female; 75 to 79 years
+ba_sex2_age75to79,Race Alone - Black or African American; Female; 75 to 79 years
+ia_sex2_age75to79,Race Alone - American Indian and Alaska Native; Female; 75 to 79 years
+aa_sex2_age75to79,Race Alone - Asian; Female; 75 to 79 years
+na_sex2_age75to79,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 75 to 79 years
+tom_sex2_age75to79,Two or More Races; Female; 75 to 79 years
+totpop_sex2_age80to84,Total; Female; 80 to 84 years
+wa_sex2_age80to84,Race Alone - White; Female; 80 to 84 years
+ba_sex2_age80to84,Race Alone - Black or African American; Female; 80 to 84 years
+ia_sex2_age80to84,Race Alone - American Indian and Alaska Native; Female; 80 to 84 years
+aa_sex2_age80to84,Race Alone - Asian; Female; 80 to 84 years
+na_sex2_age80to84,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 80 to 84 years
+tom_sex2_age80to84,Two or More Races; Female; 80 to 84 years
+totpop_sex2_age85plus,Total; Female; 85 years and over
+wa_sex2_age85plus,Race Alone - White; Female; 85 years and over
+ba_sex2_age85plus,Race Alone - Black or African American; Female; 85 years and over
+ia_sex2_age85plus,Race Alone - American Indian and Alaska Native; Female; 85 years and over
+aa_sex2_age85plus,Race Alone - Asian; Female; 85 years and over
+na_sex2_age85plus,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 85 years and over
+tom_sex2_age85plus,Two or More Races; Female; 85 years and over
+totpop_sex2_age0to17,Total; Female; Under 18 years
+wa_sex2_age0to17,Race Alone - White; Female; Under 18 years
+ba_sex2_age0to17,Race Alone - Black or African American; Female; Under 18 years
+ia_sex2_age0to17,Race Alone - American Indian and Alaska Native; Female; Under 18 years
+aa_sex2_age0to17,Race Alone - Asian; Female; Under 18 years
+na_sex2_age0to17,Race Alone - Native Hawaiian and Other Pacific Islander; Female; Under 18 years
+tom_sex2_age0to17,Two or More Races; Female; Under 18 years
+totpop_sex2_age0to4_,Total; Female; Under 18 years - Under 5 years 
+wa_sex2_age0to4_,Race Alone - White; Female; Under 18 years - Under 5 years 
+ba_sex2_age0to4_,Race Alone - Black or African American; Female; Under 18 years - Under 5 years 
+ia_sex2_age0to4_,Race Alone - American Indian and Alaska Native; Female; Under 18 years - Under 5 years 
+aa_sex2_age0to4_,Race Alone - Asian; Female; Under 18 years - Under 5 years 
+na_sex2_age0to4_,Race Alone - Native Hawaiian and Other Pacific Islander; Female; Under 18 years - Under 5 years 
+tom_sex2_age0to4_,Two or More Races; Female; Under 18 years - Under 5 years 
+totpop_sex2_age5to13,Total; Female; Under 18 years - 5 to 13 years
+wa_sex2_age5to13,Race Alone - White; Female; Under 18 years - 5 to 13 years
+ba_sex2_age5to13,Race Alone - Black or African American; Female; Under 18 years - 5 to 13 years
+ia_sex2_age5to13,Race Alone - American Indian and Alaska Native; Female; Under 18 years - 5 to 13 years
+aa_sex2_age5to13,Race Alone - Asian; Female; Under 18 years - 5 to 13 years
+na_sex2_age5to13,Race Alone - Native Hawaiian and Other Pacific Islander; Female; Under 18 years - 5 to 13 years
+tom_sex2_age5to13,Two or More Races; Female; Under 18 years - 5 to 13 years
+totpop_sex2_age14to17,Total; Female; Under 18 years - 14 to 17 years
+wa_sex2_age14to17,Race Alone - White; Female; Under 18 years - 14 to 17 years
+ba_sex2_age14to17,Race Alone - Black or African American; Female; Under 18 years - 14 to 17 years
+ia_sex2_age14to17,Race Alone - American Indian and Alaska Native; Female; Under 18 years - 14 to 17 years
+aa_sex2_age14to17,Race Alone - Asian; Female; Under 18 years - 14 to 17 years
+na_sex2_age14to17,Race Alone - Native Hawaiian and Other Pacific Islander; Female; Under 18 years - 14 to 17 years
+tom_sex2_age14to17,Two or More Races; Female; Under 18 years - 14 to 17 years
+totpop_sex2_age18to64,Total; Female; 18 to 64 years
+wa_sex2_age18to64,Race Alone - White; Female; 18 to 64 years
+ba_sex2_age18to64,Race Alone - Black or African American; Female; 18 to 64 years
+ia_sex2_age18to64,Race Alone - American Indian and Alaska Native; Female; 18 to 64 years
+aa_sex2_age18to64,Race Alone - Asian; Female; 18 to 64 years
+na_sex2_age18to64,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 18 to 64 years
+tom_sex2_age18to64,Two or More Races; Female; 18 to 64 years
+totpop_sex2_age18to24,Total; Female; 18 to 64 years - 18 to 24 years
+wa_sex2_age18to24,Race Alone - White; Female; 18 to 64 years - 18 to 24 years
+ba_sex2_age18to24,Race Alone - Black or African American; Female; 18 to 64 years - 18 to 24 years
+ia_sex2_age18to24,Race Alone - American Indian and Alaska Native; Female; 18 to 64 years - 18 to 24 years
+aa_sex2_age18to24,Race Alone - Asian; Female; 18 to 64 years - 18 to 24 years
+na_sex2_age18to24,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 18 to 64 years - 18 to 24 years
+tom_sex2_age18to24,Two or More Races; Female; 18 to 64 years - 18 to 24 years
+totpop_sex2_age25to44,Total; Female; 18 to 64 years - 25 to 44 years
+wa_sex2_age25to44,Race Alone - White; Female; 18 to 64 years - 25 to 44 years
+ba_sex2_age25to44,Race Alone - Black or African American; Female; 18 to 64 years - 25 to 44 years
+ia_sex2_age25to44,Race Alone - American Indian and Alaska Native; Female; 18 to 64 years - 25 to 44 years
+aa_sex2_age25to44,Race Alone - Asian; Female; 18 to 64 years - 25 to 44 years
+na_sex2_age25to44,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 18 to 64 years - 25 to 44 years
+tom_sex2_age25to44,Two or More Races; Female; 18 to 64 years - 25 to 44 years
+totpop_sex2_age45to64,Total; Female; 18 to 64 years - 45 to 64 years
+wa_sex2_age45to64,Race Alone - White; Female; 18 to 64 years - 45 to 64 years
+ba_sex2_age45to64,Race Alone - Black or African American; Female; 18 to 64 years - 45 to 64 years
+ia_sex2_age45to64,Race Alone - American Indian and Alaska Native; Female; 18 to 64 years - 45 to 64 years
+aa_sex2_age45to64,Race Alone - Asian; Female; 18 to 64 years - 45 to 64 years
+na_sex2_age45to64,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 18 to 64 years - 45 to 64 years
+tom_sex2_age45to64,Two or More Races; Female; 18 to 64 years - 45 to 64 years
+totpop_sex2_age65plus,Total; Female; 65 years and over
+wa_sex2_age65plus,Race Alone - White; Female; 65 years and over
+ba_sex2_age65plus,Race Alone - Black or African American; Female; 65 years and over
+ia_sex2_age65plus,Race Alone - American Indian and Alaska Native; Female; 65 years and over
+aa_sex2_age65plus,Race Alone - Asian; Female; 65 years and over
+na_sex2_age65plus,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 65 years and over
+tom_sex2_age65plus,Two or More Races; Female; 65 years and over
+totpop_sex2_age85plus_,Total; Female; 85 years and over 
+wa_sex2_age85plus_,Race Alone - White; Female; 85 years and over 
+ba_sex2_age85plus_,Race Alone - Black or African American; Female; 85 years and over 
+ia_sex2_age85plus_,Race Alone - American Indian and Alaska Native; Female; 85 years and over 
+aa_sex2_age85plus_,Race Alone - Asian; Female; 85 years and over 
+na_sex2_age85plus_,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 85 years and over 
+tom_sex2_age85plus_,Two or More Races; Female; 85 years and over 
+totpop_sex2_age16plus,Total; Female; 16 years and over
+wa_sex2_age16plus,Race Alone - White; Female; 16 years and over
+ba_sex2_age16plus,Race Alone - Black or African American; Female; 16 years and over
+ia_sex2_age16plus,Race Alone - American Indian and Alaska Native; Female; 16 years and over
+aa_sex2_age16plus,Race Alone - Asian; Female; 16 years and over
+na_sex2_age16plus,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 16 years and over
+tom_sex2_age16plus,Two or More Races; Female; 16 years and over
+totpop_sex2_age18plus,Total; Female; 18 years and over
+wa_sex2_age18plus,Race Alone - White; Female; 18 years and over
+ba_sex2_age18plus,Race Alone - Black or African American; Female; 18 years and over
+ia_sex2_age18plus,Race Alone - American Indian and Alaska Native; Female; 18 years and over
+aa_sex2_age18plus,Race Alone - Asian; Female; 18 years and over
+na_sex2_age18plus,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 18 years and over
+tom_sex2_age18plus,Two or More Races; Female; 18 years and over
+totpop_sex2_age15to44,Total; Female; 15 to 44 years
+wa_sex2_age15to44,Race Alone - White; Female; 15 to 44 years
+ba_sex2_age15to44,Race Alone - Black or African American; Female; 15 to 44 years
+ia_sex2_age15to44,Race Alone - American Indian and Alaska Native; Female; 15 to 44 years
+aa_sex2_age15to44,Race Alone - Asian; Female; 15 to 44 years
+na_sex2_age15to44,Race Alone - Native Hawaiian and Other Pacific Islander; Female; 15 to 44 years
+tom_sex2_age15to44,Two or More Races; Female; 15 to 44 years
+totpop_sex2_medage,Total; Female; Median age (years)
+wa_sex2_medage,Race Alone - White; Female; Median age (years)
+ba_sex2_medage,Race Alone - Black or African American; Female; Median age (years)
+ia_sex2_medage,Race Alone - American Indian and Alaska Native; Female; Median age (years)
+aa_sex2_medage,Race Alone - Asian; Female; Median age (years)
+na_sex2_medage,Race Alone - Native Hawaiian and Other Pacific Islander; Female; Median age (years)
+tom_sex2_medage,Two or More Races; Female; Median age (years)

@@ -1,13 +1,9 @@
 # daily-mortality-and-air-quality
 varying covariances pollution model in Stan and daily mortality study
 
+An example of running the proposed varying covariances pollution model is presented in "Example_pollutionModel.R", with the external data "data_all_toronto.RData"  and defined Stan code for pollution model "STAN_pollution_model.stan".
 
-The hourly monitoring pollution data can be downloaded by “downloadPollution.R”.
+The raw hourly monitoring pollution data can be downloaded by R code in folder “Obtain_pollution”.
+The R code related to fitting disease model is in folder "Disease_model"
 
-Temperature data can be downloaded by “obtainTemperature.R”.
 
-Then, the varying pollution model is running by R script 1,2,3,4,5, with the external defined Stan code for pollution model (JASA_pollution_model.stan).
-
-The disease model code is “fitdiseasemodel.R”.
-
-The code for combining health effects across cities can be seen in “combineAcrossCities.R” with the external defined Stan code “MCMCcombine.stan”. 
