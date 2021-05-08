@@ -480,7 +480,7 @@ initf <- function() list(
 # add time trend needed data
 current_data$trend_reference_day <- 2923 # which uses the Jan 1st, 2004 as the reference day. 
 
-fit.code <- stanc(here::here("Model","Stan_pollution_model.stan")) # convert to C++ code
+fit.code <- stanc(here::here("Model","STAN_pollution_model.stan")) # convert to C++ code
 fit.model <- stan_model(stanc_ret = fit.code) # compile C++ code
 # load("~/NEW_pollution/fit.model.RData")
 rstan_options(auto_write = TRUE)
