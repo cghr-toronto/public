@@ -8,7 +8,7 @@ The R code related to fitting disease model is in folder "Disease_model".
 
 Note: 
 The govenment of Canada had updated the links (ways) to download NAPS data. The folder "New_pollutionModel_example" is an example to fit our proposed pollution model using the updated links. 
-The population-weighted daily posterior samples of pollution from fitting pollution model are shared in folder "plll"
+The population-weighted daily posterior samples of pollution from fitting pollution model are shared in folder "Pollution model output".
 
 
 
