@@ -1,1 +1,16 @@
-The code of the study will be shared here shortly.
+Because the health data are private, some data are not available here.
+However, the Rscripts are still put here for sharing the idea and the written fuctions.
+
+Main files:
+1. pollution_summary.R, used to generate the summary table of exposure data.
+2. plots.R, used to generate the nice plots in paper.
+3. fit_health_model.R, used to fit the clogit health models.
+4. city_combination.R, used to combine the health effects across cities.
+
+In addition,
+a) exposure_column.RData is the exposure data set.
+b) MCMCcombinePatrickHalfNS.stan, is the stan code used for combining health effects across cities.
+c) CD_fit_sep.RData, contains information of each city.
+d) icd_00a16a_e.rds, contains information of each city.
+e) combine_result_morb_all-causeall-ageall-yearS.RData, an example of the combined results.
+f) combine_result_mort_all-causeall-ageall-yearS.RData, an example of the combined results.
