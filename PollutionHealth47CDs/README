@@ -12,5 +12,5 @@ a) exposure_column.RData is the exposure data set.
 b) MCMCcombinePatrickHalfNS.stan, is the stan code used for combining health effects across cities.
 c) CD_fit_sep.RData, contains information of each city.
 d) icd_00a16a_e.rds, contains information of each city.
-e) combine_result_morb_all-causeall-ageall-yearS.RData, an example of the combined results.
-f) combine_result_mort_all-causeall-ageall-yearS.RData, an example of the combined results.
+e) lags_combine_result_morb_all-causeall-ageall-yearSlag01.RData, an example of the combined results.
+f) lags_combine_result_mort_all-causeall-ageall-yearSlag01.RData, an example of the combined results.
